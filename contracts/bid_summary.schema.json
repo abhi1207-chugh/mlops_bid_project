@@ -1,0 +1,138 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "bid_summary.v1",
+  "title": "Bid summary v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "tender_id",
+    "bidder_name",
+    "bidder_category_claimed",
+    "avg_annual_turnover_inr",
+    "emd_paid_inr",
+    "documents_submitted"
+  ],
+  "properties": {
+    "tender_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_\\-]+$",
+      "maxLength": 64
+    },
+    "bidder_name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "bidder_category_claimed": {
+      "enum": [
+        "large_enterprise",
+        "mse",
+        "startup",
+        "consortium",
+        "foreign",
+        "unknown"
+      ]
+    },
+    "dpiit_recognition_number": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 64
+    },
+    "udyam_registration_number": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 64
+    },
+    "avg_annual_turnover_inr": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1000000000000
+    },
+    "turnover_years_reported": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 10
+    },
+    "emd_paid_inr": {
+      "type": "number",
+      "minimum": 0
+    },
+    "emd_exemption_claimed": {
+      "type": "boolean",
+      "default": false
+    },
+    "similar_work_experience_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "documents_submitted": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "legal_status",
+          "pan",
+          "gst",
+          "tender_acceptance_letter",
+          "bid_security_declaration",
+          "oem_authorization",
+          "experience_proof",
+          "turnover_proof",
+          "data_sheet",
+          "escalation_matrix",
+          "warranty_declaration",
+          "emd_proof",
+          "dpiit_certificate",
+          "udyam_certificate"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "is_trader": {
+      "type": "boolean",
+      "description": "Tender clause 2 excludes traders from the MSE EMD exemption"
+    },
+    "manufacturer_or_distributor": {
+      "enum": [
+        "manufacturer",
+        "authorised_distributor",
+        "other"
+      ]
+    },
+    "item_category": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "preference_claimed": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 100
+    },
+    "remarks": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 1000,
+      "description": "Free text. Treated as untrusted: injection guard applies (L4)."
+    },
+    "turnover_certificate_covers_three_years": {
+      "type": [
+        "boolean",
+        "null"
+      ],
+      "description": "False when the turnover certificate does not state the three financial years (tender clause 5 evidence)"
+    }
+  },
+  "x-cross-field-rules": [
+    "bidder_category_claimed == startup  =>  dpiit_recognition_number or 'dpiit_certificate' in documents_submitted (else quarantine or flag)",
+    "bidder_category_claimed == mse      =>  udyam_registration_number present",
+    "emd_exemption_claimed == true        =>  bidder_category_claimed in (startup, mse)",
+    "emd_paid_inr > 0                     =>  'emd_proof' in documents_submitted"
+  ]
+}

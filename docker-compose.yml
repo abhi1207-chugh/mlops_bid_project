@@ -1,0 +1,88 @@
+# Deployment boundaries (justify these in the report):
+#  api      - latency-sensitive, stateless, scaled by request rate; must stay up while workers are busy or failing
+#  worker   - CPU/LLM-bound, slow runs; scaled independently (--scale worker=3); failure must not take down the API
+#  redis    - queue, cache and rate-limit state shared by api and workers
+#  stub-llm - isolates load tests from provider rate limits
+#  prometheus / grafana / jaeger - observability, released independently of the app
+
+services:
+  redis:
+    image: redis:7-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  stub-llm:
+    build: ./services/stub_llm
+    environment:
+      STUB_DELAY_MS: ${STUB_DELAY_MS:-1500}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8080/health')"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  api:
+    build:
+      context: .
+      dockerfile: services/api/Dockerfile
+    env_file: .env
+    ports:
+      - "${API_PORT:-8000}:8000"
+    volumes:
+      - appdata:/data
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+
+  worker:
+    build:
+      context: .
+      dockerfile: services/worker/Dockerfile
+    env_file: .env
+    volumes:
+      - appdata:/data
+    depends_on:
+      redis:
+        condition: service_healthy
+      stub-llm:
+        condition: service_healthy
+    # Do not set container_name or host ports here: this service must scale with --scale worker=3
+    expose:
+      - "9100"
+
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./observability/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"
+    depends_on:
+      - api
+
+  grafana:
+    image: grafana/grafana:latest
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:?set GRAFANA_ADMIN_PASSWORD in .env}
+    ports:
+      - "${GRAFANA_PORT:-3000}:3000"
+    depends_on:
+      - prometheus
+
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    environment:
+      COLLECTOR_OTLP_ENABLED: "true"
+    ports:
+      - "16686:16686"
+
+volumes:
+  appdata:

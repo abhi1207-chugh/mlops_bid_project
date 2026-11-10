@@ -1,0 +1,357 @@
+                राष्ट्रीय प्रौद्योगिकी संस्थान
+                NATIONAL INSTITUTE OF TECHNOLOGY
+                राउरकेला ROURKELA – 769008, ओगिशा ODISHA
+
+                              LIMITED TENDER ENQUIRY
+
+Enquiry No.: NITR/PW/CIC-LTE/2026/390 Date 05/11/2026
+Name of Tender: Supply of Network Switches.
+
+
+Date Schedule
+
+  Document Submission Start Date             05/11/2026, 18:50 Hrs.
+  Last Date & Time for Submission of Bid     26/11/2026, 10:00 Hrs.
+  Date & Time of opening of Bid              27/11/2026, 10:00 Hrs.
+
+
+Cover Details
+
+   1) Cover – I: Technical Bid upload all the documents including annexure(s) in single pdf.
+   2) Cover – II: Financial Bid upload only quotation / price bid (BOQ).
+
+
+Dear Sir / Madam,
+
+       We intend to purchase the goods as specified (Annexure-1) and invite online bid in accordance
+with the terms and conditions detailed in the bid document. Tender Documents may be downloaded
+from Central Public Procurement Portal https://eprocure.gov.in/eprocure/app or the NIT Rourkela
+website https://www.nitrkl.ac.in/PurchaseSection/GoodsTenders.
+
+
+
+Contact, if any query:
+
+Head, Computer & Informatics Centre
+National Institute of Technology Rourkela, Rourkela, Odisha 769 008
+Tel.: 0661 -246-2671
+Email: hod-cic@nitrkl.ac.in
+
+
+
+
+                                                                                          Page 1 of 8
+                     INSTRUCTION FOR SUBMISSION OF QUOTATION
+
+1.   Tender Fee & Earnest Money Deposit (EMD): A non-refundable Tender Fee of Rs. 1500/-
+     (Rupees One Thousand Five hundred only) and refundable EMD of Rs. 1,00,000/- (Rupees One
+     Lakh only) to be deposited through ONLINE mode only using NET-BANKING / NEFT / IMPS
+     to the designated bank account of NIT Rourkela as detailed below:
+      Bank Name: State Bank of India
+      Branch: NIT Campus, Rourkela, Odisha
+      Account Name: Security Deposit Account
+      Account No.: 30046305869
+      IFSC: SBIN0002109
+2. EMD Exemption: Micro and Small Enterprises (MSEs) as defined in MSE Procurement Policy
+   issued by Department of Micro, Small and Medium Enterprises (MSME) for goods produced and
+   services rendered, are exempted from paying EMD/Bid Security. Accordingly, MSEs shall be
+   required to submit valid Udyam Registration Certificate for availing benefit under MSE
+   Procurement Policy. The benefit as above to MSMEs shall be available only for Goods produced
+   and services rendered by MSMEs. However, traders are excluded from the purview of MSME
+   Procurement Policy.
+3. Startup(s) as recognized by Department for Promotion of Industry and Internal Trade (DPIIT),
+   Govt. of India, are exempted from paying EMD/Bid Security. However, they have to enclose
+   valid self-attested registration certificate(s) along with the tender to this effect.
+4. Eligible MSE and startup bidders who seeks exemption for paying EMD/Bid Security as per
+   above clause, if they withdraw or modify their bids during the period of validity, or if they are
+   awarded the contract and they fail to execute the contract, or to submit a performance security
+   before the deadline defined in the request for bids document/contract, they will be suspended for
+   the period of three years or for a period as decided by the competent authority from being eligible
+   to submit bids for future contracts with the NIT Rourkela. Bidders should submit the duly filled
+   and signed declaration as per the attached format in Annexure – III.
+5. Bidder Turn Over Criteria: The minimum average annual financial turnover of the bidder
+   during the three financial years, ending on 31st March 2026, should be Rs. 1,50,00,000 (One
+   Crore and Fifty lakhs). Documentary evidence in the form of certified Audited Balance Sheets of
+   relevant periods OR a certificate from the Chartered Accountant / Cost Accountant indicating the
+   turnover details for the relevant period shall be uploaded with the bid.
+6. Bidder Experience Criteria: The bidder must have supplied same or similar category products
+   during last 5 financial years ending on 31 March 2026. Relevant documents in support of the
+   experience criteria must be submitted along with the bid.
+7. Manufacturer Authorization: Wherever Authorised Distributors/service providers are
+   submitting the bid, Authorisation Form /Certificate with OEM/Original Service Provider details
+   such as name, designation,address, e-mail Id and Phone No. required to be furnished along with
+   the bid.
+8. Data Sheet of the product(s) offered in the bid, are to be uploaded along with the bid documents.
+   Buyers can match and verify the Data Sheet with the product specifications offered. In case of any
+   unexplained mismatch of technical parameters, the bid is liable for rejection.
+9. Warranty and Support: Warranty period of the supplied products shall be 5 years from the date
+   of final acceptance of goods or after completion of installation, commissioning & testing of goods
+   (if included in the scope of supply), at consignee location. OEM Warranty certificates must be
+   submitted by Successful Bidder at the time of delivery of Goods. The seller should guarantee the
+   rectification of goods in case of any break down during the warranty period. Seller should have
+   well established Installation, Commissioning, Training, Troubleshooting and Maintenance
+
+
+                                                                                              Page 2 of 8
+    Service group in INDIA for attending the after sales service. Details of Service Centres near
+    consignee destinations are to be uploaded along with the bid.
+10. Rate: The rate quoted must be inclusive of all the taxes & incidental charges. The bidders should
+    quote their rates in clear terms without ambiguity in Price Bid (BOQ). In case of discrepancy
+    between the rates in figures and words, the rate in words shall prevail.
+11. Documents to be submitted:
+        (i) Cover – I: Technical Part (all documents must be self-attested)
+          a) Copy of Valid Legal Status (Proprietorship / Partnership / Public Limited / Private
+             Limited)
+          b) Copy of Valid PAN Card
+          c) Copy of Valid GST Registration Certificate
+          d) Duly filled and signed (Tender Acceptance Letter)
+          e) Duly filled and signed Bid Security Declaration (For EMD exempted bidder)
+          f) Bid specific OEM Authorization letter
+          g) Relevant document in support of Bidder’s experience criteria
+          h) Relevant documents in support of the Bidder’s turnover criteria.
+          i) Data Sheet of the Products offered
+          j) Escalation Matrix for Service Support
+          k) Warranty declaration on OEM letterhead
+
+        (ii) Cover – II: Price Bid (Duly filled and signed Price Bid)
+    NOTE: Bids not accompanied by any of the above documents shall be rejected summarily.
+12. Late bids, that is, bids received after the specified date and time of receipt shall not be considered.
+13. Period of Validity: A quotation shall remain valid for acceptance at least for a period of 120 days
+    from the date of opening.
+14. Rejection of Bid / Offer: The Institute reserves the right to reject any or all bid / offer without
+    assigning any reason thereof.
+15. The bid document / resultant contract shall be interpreted under Indian Laws.
+16. The lowest quoted value amongst responsive bidders shall be accepted, and an acceptance /
+    purchase order shall be issued. However, in exceptional circumstances, where the price offered by
+    Lowest (L1) bidder is not reasonable, a negotiation shall be held only with that bidder.
+17. The Acceptance Letter / Purchase Order would be issued to the successful bidder(s) notifying the
+    quantity and schedule of delivery.
+18. In case the successful bidder does deliver the mentioned Goods or in delays supply of goods, the
+    EMD shall be forfeited, and other actions initiated, including resale of the goods in question at the
+    risk and cost of the defaulter.
+19. In case the lowest acceptable bidder cannot accept supply the mentioned goods, the remaining
+    quantity shall be offered to the next lowest bidder(s) at the price offered by the lowest acceptable
+    bidder.
+20. If the bidder’s offer is not accepted, the bidder’s EMD shall be refunded to the firm. No interest
+    shall be payable on such refunds. The EMD deposited by the successful bidder shall remain with
+    the NIT Rourkela supply of all the goods. Upon successfully lifting of all items, EMD shall be
+    refunded within 15 days.
+21. Delivery Period: The goods are required to be delivered at designated department / office of NIT
+    Rourkela within 60 days from the date of placement of Purchase Order under the risk and
+    arrangement of the bidder and offers with delivery beyond the above period shall be treated as
+
+
+
+                                                                                                   Page 3 of 8
+    unresponsive. In case the delivery time is higher, the same must be mentioned clearly in the
+    quotation.
+22. Award of Contract: Contract shall be awarded to lowest quoted (L1) bidder along with
+    submission of all the technical documents as mentioned. Lowest (L1) bidder shall be
+    determined on overall quoted price in Price Bid (BOQ).
+23. Performance Security / Security Deposit: The successful bidder upon receipt of the Award of
+    Contract shall have to deposit a Performance Security (PS) of 3% of total contract value, within
+    15 days after issuance of Award of Contract. Performance Security may be furnished in the form
+    of Bank Guarantee (including e-bank guarantee) issued / confirmed from any of the scheduled
+    banks in India, ONLINE mode using NET-BANKING or payment online in an acceptable form.
+    Performance Security shall remain valid for a period of 60 days beyond the date of completion of
+    all contractual obligations.
+24. If the bidder, fails to furnish the Performance Security within the specified period, NIT Rourkela
+    at its discretion to annul the award and enforce Bid Security Declaration (in lieu of forfeiture of
+    the Bid Security / EMD), in addition to other administrative punitive action as deemed
+    appropriate.
+25. Payment Terms: Unless otherwise stipulated in the Purchase Order, 100% payment shall be
+    made against successful delivery and acceptance of the goods by NITR as confirmed by the
+    consignee, endorsed by the indentor and approved by the indentors’ Head of Department /
+    Section.
+26. Tax invoices (in triplicate) shall be in original and shall contain the NITR Purchase Order
+    number, and a description, the quantities, unit and total price(s) of the Goods delivered. The
+    currency of the invoice and payment shall be as specified in the Purchase Order.
+27. The NITR shall not pay any charge for late payments. No advance payment of any type
+    (Mobilization, secured advances etc.), shall be made by the Institute to the contractor.
+28. Liquidated Damages: The liquidated damages shall be levied, for delay in supply beyond the
+    contractual delivery date at the rate of 1% per unit per week of delay or part thereof on delayed
+    supply of goods and / or services until actual delivery or performance subject to a maximum of
+    10% of the contract price of the equipment the delivery of which is delayed, for each month or
+    part of a month.
+
+
+
+
+                                                                                               Page 4 of 8
+           Annexure – I: Technical Specification of the Network Switches
+A. Technical Specification for 48 port Non-POE Gigabit Layer-2 managed switch with 10G fiber
+   uplink ports (Qty: 35)
+
+   1. Should be rack mountable.
+   2.  Should have minimum one internal PSU and two internal fans.
+   3.  Should have minimum 48 x 1G copper/RJ45 ports.
+   4.  Should have minimum 4 x 10G SFP+ ports.
+   5.  Should have built-in USB port to facilitate upload/download of configuration files and
+       Firmware updates.
+   6. Should support dual firmware image architecture.
+   7. Should have non-blocking architecture with minimum 176 Gbps switching fabric/bandwidth
+       and minimum 130.9 Mpps packet forwarding rate.
+   8. Should support minimum 256 VLANS, 16K MAC addresses database size and 512 Multicast
+       groups.
+   9. Should support advanced features such as IPv4/IPv6 static routing, DHCP snooping and VLAN
+       routing.
+   10. Should support services such as Broadcast, Multicast and unknown Unicast storm control, STP
+       (Rapid STP & Multiple STP) and DHCP Relay.
+   11. Should support 802.1x RADIUS Network Access Control, L2/L3 ACLs, DoS attacks
+       prevention, Network Storm protection and Dynamic ARP inspection.
+   12. Should support Voice VLAN with SIP protocol and LLDP-MED IP phones.
+   13. Operating Temperature should be from 0° to 50°C (32° to 122°F).
+
+
+B. Technical Specification for 24 port Non-POE 10Gigabit Layer-3 managed switch with 10G
+   fiber uplink ports (Qty: 03)
+
+   1.  Should be rack mountable.
+   2.  Should have minimum one internal PSU and two internal fans.
+   3.  Should have minimum 12 x 1G/2.5G/5G/10G copper/RJ45 ports.
+   4.  Should have minimum 12 x 1G/10G SFP+ ports.
+   5.  Should have built-in USB port to facilitate upload/download of configuration files and
+       Firmware updates.
+   6. Should support dual firmware image architecture.
+   7. Should have non-blocking architecture with minimum 480 Gbps switching fabric/bandwidth
+       and minimum 350 Mpps throughput.
+   8. Should support minimum 4K VLANS, 16K MAC addresses database size, 4K (IPv4 + IPv6)
+       Multicast groups and L2/L3 100 ACLs.
+   9. Should support advanced features such as IPv4/IPv6 static routing, DHCP snooping and VLAN
+       routing.
+   10. Should support services such as Broadcast, Multicast and unknown Unicast storm control, STP
+       (Rapid STP & Multiple STP) and DHCP Relay.
+   11. Should support 802.1x Radius Port Access Authentication, L2/L3 ACLs, DoS attacks
+       prevention, Network Storm protection and Dynamic ARP inspection.
+   12. Should support Voice VLAN with SIP protocol and LLDP-MED IP phones automatic QoS and
+       VLAN configuration.
+   13. Operating Temperature should be from 0° to 50°C (32° to 122°F).
+
+
+
+
+                                                                                          Page 5 of 8
+C. 8 port non-POE Gigabit Layer-2 managed switch with 1G fiber uplink ports (Qty: 50)
+
+   1. Should be rack mountable.
+   2. Should have minimum one internal PSU.
+   3. Should have minimum 8 x 1G copper/RJ45 ports.
+   4. Should have minimum 2 x 1G SFP ports.
+   5. Should have minimum 1 (one) Console Port.
+   6. Should have minimum 20Gbps bandwidth and minimum 14.5Mpps packet forwarding rate.
+   7. Should support 4K VLANS and minimum 8K MAC addresses database size.
+   8. Should support services such as Broadcast/Multicast/Unknown-unicast Storm Control.
+   9. Should support 802.1x Radius Port Based Authentication and DoS defense mechanism.
+   10. Operating Temperature should be from 0℃ to 40℃ (32℉ to 104℉).
+
+
+
+
+                                                                                        Page 6 of 8
+Annexure – II: TENDER ACCEPTANCE LETTER
+(On The Letter Head of the Bidder)
+
+To,
+
+The Registrar,
+National Institute of Technology Rourkela
+Rourkela – 769008
+Odisha
+
+Sub: Undertaking and Acceptance of all the Terms & Conditions of tender.
+
+Ref.: Tender Enquiry No.:
+
+      1. I/We have received / obtained the tender document(s) for the above mentioned “Tender/Work” from the
+         CPP Portal / NIT Rourkela website.
+      2. I/We have carefully read and understood all the terms and conditions including annexure(s) of the tender
+         and undertake to abide by them.
+      3. The corrigendum(s) issued from time to time by your department/ organization too have also been taken
+         into consideration, while submitting this acceptance letter.
+      4. I / We also declare that my / our firm has not declared us ineligible or blacklisted on charges of
+         engaging in corrupt, fraudulent, collusive or coercive practices or any failure / lapses of serious
+         nature. by Government of India / any other Government body / any other organization.
+      5. I / We shall not withdraw or modify the bid submitted for the above Enquiry No. during the period of
+         validity of the bids.
+      6. The information / documents furnished for this tender are authentic to the best of my/our knowledge and
+         belief.
+      7. I / We, further undertake to have understood that if my / our firm M/s._____________________
+         withdraws or modifies its bids or if it fails to sign the contract or fails to submit a performance security
+         within the stipulated deadline, my / our shall be suspended for a period at least for two years from being
+         eligible to submit bids with National Institute of Technology, Rourkela.
+      8. I/We hereby unconditionally accept the tender conditions of above-mentioned tender document(s)/
+         corrigendum(s) in its totality/entirety.
+      9. I / We/ are aware of the fact that furnishing of any false information / fabricated documents would lead
+         to rejection of my / our tender at any stage besides any liabilities towards prosecution under the
+         appropriate law.
+
+
+
+Thank you.
+
+Yours faithfully,
+
+
+
+
+Authorized Signatory
+(Signature with Seal)
+
+Name:
+Designation:
+Date:
+
+
+
+
+                                                                                                            Page 7 of 8
+Annexure – III: BID SECURITY DECLARATION (For EMD exempted bidder)
+(On the Letterhead of the Firm)
+
+To
+
+The Registrar
+National Institute of Technology Rourkela
+Rourkela – 769008
+Odisha
+
+Ref.: Tender Enquiry No.:
+
+Dear Sir / Madam,
+
+I/We, the undersigned, hereby submit our Bid for the above-mentioned tender and declare the
+following:
+
+     1. I/We understand that, in accordance with the tender terms and conditions, bids must be
+        supported by a Bid Security Declaration in lieu of Bid Security (EMD).
+     2. I/We accept that I/We will be automatically suspended from participating in any tender or
+        contract issued by NIT Rourkela for a period of three (3) years or as decided by the Institute,
+        starting from the date of bid closure, in the event that we:
+          a) Withdraw our bid during the period of bid validity specified in our Letter of Bid; or
+          b) Having been notified of the acceptance of our bid by NIT Rourkela during the bid validity
+              period:
+             (i) Fail or refuse to execute the contract, or
+            (ii) Fail or refuse to furnish the required Performance Security in accordance with the
+                  tender terms.
+
+I/We understand that this declaration shall be binding on us and may be used by the Institute to enforce
+the above penalty provisions without requiring further notice or legal proceedings.
+
+Thank you.
+
+Yours faithfully,
+
+
+
+Authorized Signatory
+(Signature with Seal of the Firm)
+
+Name:
+Designation:
+Date:
+
+
+
+
+                                                                                                Page 8 of 8
+

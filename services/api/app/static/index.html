@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bid Compliance Screening</title>
+<style>
+body{font:15px/1.5 system-ui,sans-serif;max-width:60rem;margin:1.5rem auto;padding:0 1rem;color:#1b1f24}
+h1{font-size:1.3rem} textarea{width:100%;height:16rem;font:12px/1.4 ui-monospace,monospace}
+button,select{font:inherit;padding:.4rem .8rem;margin:.2rem .2rem .2rem 0}
+.route{display:inline-block;padding:.25rem .7rem;border-radius:4px;font-weight:600;color:#fff}
+.pass_to_technical_evaluation{background:#1a7f37}.seek_clarification{background:#9a6700}
+.reject_with_cited_condition{background:#cf222e}.escalate_to_human{background:#6639ba}
+.card{border:1px solid #d0d7de;border-radius:6px;padding:.7rem 1rem;margin:.7rem 0}
+blockquote{margin:.3rem 0;padding-left:.7rem;border-left:3px solid #d0d7de;color:#57606a}
+.err{color:#cf222e}.muted{color:#57606a;font-size:13px}
+</style></head><body>
+<h1>Bid Compliance Screening</h1>
+<p class="muted">Screening finding only. A tender committee decides; this system never rejects or qualifies a bid on its own authority.</p>
+<select id="sample"><option value="">Load a sample bidder…</option></select>
+<textarea id="bid" spellcheck="false">{}</textarea><br>
+<button id="go">Submit for screening</button> <span id="state" class="muted"></span>
+<div id="out"></div>
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let samples=[];
+fetch("/v1/samples").then(r=>r.json()).then(s=>{samples=s;s.forEach((x,i)=>{const o=document.createElement("option");o.value=i;o.textContent=x.id+" — "+x.description;$("sample").appendChild(o)})});
+$("sample").onchange=e=>{if(e.target.value!=="")$("bid").value=JSON.stringify(samples[e.target.value].bid,null,2)};
+const cites=l=>(l||[]).map(c=>`<blockquote><b>${esc(c.doc_id)} · ${esc(c.clause_ref)}</b><br>“${esc(c.quote)}”</blockquote>`).join("");
+function render(d){
+  const f=d.finding;
+  if(!f){$("out").innerHTML=`<div class="card">Status: <b>${esc(d.status)}</b></div>`;return}
+  let h=`<div class="card"><span class="route ${f.route}">${esc(f.route)}</span> <span class="muted">run ${esc(d.run_id)} · category ${esc(f.bidder_category)}</span><p>${esc(f.summary)}</p>`;
+  if(f.escalation_reason)h+=`<p><b>Escalation reason:</b> ${esc(f.escalation_reason)}</p>`;
+  if(f.committee_questions.length)h+=`<p><b>The committee must decide:</b></p><ul>${f.committee_questions.map(q=>`<li>${esc(q)}</li>`).join("")}</ul>`;
+  h+=`</div>`;
+  f.conditions.forEach(c=>{h+=`<div class="card"><b>${esc(c.condition)}</b> (${esc(c.clause_ref||"")}) — ${esc(c.status)}<p>${esc(c.evidence)}</p>${cites(c.citations)}</div>`});
+  if(f.citations.length)h+=`<div class="card"><b>Citations</b>${cites(f.citations)}</div>`;
+  h+=`<p class="muted">Verification: ${f.verification?(f.verification.passed?"passed":"failed")+" after "+f.verification.attempts+" attempt(s)":"n/a"} · ${f.steps} LLM steps · ${f.tool_calls} tool calls · <a href="/v1/screenings/${d.run_id}/trace">trace</a><br>${esc(f.disclaimer)}</p>`;
+  $("out").innerHTML=h;
+}
+$("go").onclick=async()=>{
+  $("out").innerHTML="";$("state").textContent="submitting…";
+  const r=await fetch("/v1/screenings",{method:"POST",headers:{"content-type":"application/json"},body:$("bid").value});
+  const j=await r.json();
+  if(r.status===422){$("state").textContent="Rejected at intake; no run started.";
+    $("out").innerHTML=`<div class="card err"><b>Quarantined (${esc(j.quarantine_id)})</b><ul>${(j.errors||[]).map(e=>`<li><code>${esc(e.field)}</code>: ${esc(e.message)}</li>`).join("")}</ul></div>`;return}
+  if(!r.ok){$("state").textContent="Error "+r.status;return}
+  const id=j.run_id;
+  for(;;){
+    const d=await (await fetch("/v1/screenings/"+id)).json();
+    $("state").textContent="status: "+d.status;
+    if(d.status==="done"||d.status==="escalated"||d.status==="failed"){render(d);break}
+    await new Promise(r=>setTimeout(r,1000));
+  }
+};
+</script></body></html>

@@ -1,0 +1,17 @@
+redis
+pydantic>=2
+prometheus-client
+httpx
+numpy
+langgraph
+langchain
+langchain-core
+langchain-community
+faiss-cpu
+sentence-transformers
+opentelemetry-sdk
+opentelemetry-exporter-otlp
+# test-only
+pytest
+fastapi
+fakeredis

@@ -1,0 +1,129 @@
+30/10/2026, 17:08                                                  eProcurement System Government of India
+
+                                                    eProcurement System Government of India
+                                                                   Tender Details
+                                                                                                                      Date : 30-Oct-2026 05:08 PM
+
+                                                                                                                                              Print
+
+     Basic Details
+                                  Central Water Commission- DoWR RD and GR||Mahanadi and Eastern Rivers Organisation -
+    Organisation Chain
+                                  Bhubaneswar||SE(HOC) - Bhubaneswar||Mahanadi Division - Burla
+    Tender Reference
+                                  MD/HQ/NIT/2020-21/1601-09 dated 03.09.2020
+    Number
+    Tender ID                     2020_CWC_581435_1                    Withdrawal Allowed                    Yes
+    Tender Type                   Open Tender                          Form of contract                      Works
+    Tender Category               Services                             No. of Covers                         1
+    General Technical                                                  ItemWise Technical Evaluation
+                                  No                                                                         No
+    Evaluation Allowed                                                 Allowed
+                                                                       Is Multi Currency Allowed For
+    Payment Mode                  Offline                                                                    No
+                                                                       BOQ
+    Is Multi Currency
+                                  No                                   Allow Two Stage Bidding               No
+    Allowed For Fee
+
+
+     Payment Instruments                                            Cover Details, No. Of Covers - 1
+    Offline S.No    Instrument Type                                Cover
+                                                                             Cover                            Document Type        Description
+              1     Demand Draft                                   No
+              2      FDR                                                                                                           Registration
+                                                                                                                                   with
+              3      Bank Guarantee                                1         Fee/PreQual/Technical/Finance .pdf                    Appropriate
+                                                                                                                                   Government
+                                                                                                                                   Authority
+                                                                                                              .pdf                 PAN and GST
+                                                                                                                                   ITR copies of
+                                                                                                              .pdf
+                                                                                                                                   last 3 years
+                                                                                                                                   The avg
+                                                                                                                                   annual
+                                                                                                                                   turnover over
+                                                                                                                                   3 financial
+                                                                                                              .pdf                 years should
+                                                                                                                                   not be less
+                                                                                                                                   than 5 lacks
+                                                                                                                                   (supportive
+                                                                                                                                   doc)
+                                                                                                                                   Experience of
+                                                                                                                                   similar work
+                                                                                                              .pdf
+                                                                                                                                   executed
+                                                                                                                                   before
+                                                                                                                                   Bill of
+                                                                                                              .xls
+                                                                                                                                   Quantity
+
+
+     Tender Fee Details, [Total Fee in ₹ * - 500]                           EMD Fee Details
+     Tender Fee in ₹        500                                             EMD Amount in ₹         10,000           EMD Exemption         No
+                                                                                                                     Allowed
+     Fee Payable To         EE MD CWC        Fee Payable At         Burla
+                                                                            EMD Fee Type            fixed            EMD Percentage        NA
+     Tender Fee             No
+     Exemption Allowed                                                      EMD Payable To          EE MD CWC        EMD Payable At        Burla
+
+
+
+     Work /Item(s)
+    Title                         Providing the services of 01 No. Non-AC Motor Vehicle (for UMSD MMSD 2 CWC Raipur) like BOLERO or TATA
+                                  SUMO or equivalent type not older than 01/01/2016 along with driver in uniform including maintenance cost
+                                  and repairing cost of vehicle POL Lu
+    Work Description              Providing the services of 01 No. Non-AC Motor Vehicle (for UMSD MMSD 2 CWC Raipur) like BOLERO or TATA
+                                  SUMO or equivalent type not older than 01/01/2016 along with driver in uniform including maintenance cost
+                                  and repairing cost of vehicle POL Lu
+    Pre Qualification             Please refer Tender documents.
+    Details
+    Independent External          NA
+    Monitor/Remarks
+https://eprocure.gov.in/eprocure/app?component=%24DirectLink&page=FrontEndTenderDetails&service=direct&session=T&sp=SPLyUUIQOJKju%2Fv87Egg…           1/2
+30/10/2026, 17:08                                                eProcurement System Government of India
+    Tender Value in ₹          NA                              Product Category             Hiring of       Sub category               NA
+                                                                                            Vehicles
+    Contract Type              Tender                          Bid Validity(Days)           60              Period Of Work(Days)       300
+    Location                   EE Mahanandi Division CWC       Pincode                      768017          Pre Bid Meeting Place      NA
+                               Burla
+    Pre Bid Meeting            NA                              Pre Bid Meeting Date         NA              Bid Opening Place          Burla
+    Address
+    Should Allow NDA           No                              Allow Preferential           No
+    Tender                                                     Bidder
+    Tenderer Class             As per Tender Document
+
+
+     Critical Dates
+    Publish Date                              03-Sep-2020 05:50 PM         Bid Opening Date                       16-Sep-2020 11:00 AM
+    Document Download / Sale Start            03-Sep-2020 05:50 PM         Document Download / Sale End           14-Sep-2020 04:00 PM
+    Date                                                                   Date
+    Clarification Start Date                  NA                           Clarification End Date                 NA
+    Bid Submission Start Date                 03-Sep-2020 05:50 PM         Bid Submission End Date                14-Sep-2020 04:00 PM
+
+
+
+     Tender Documents
+    NIT                                                                                                                    Document Size
+    Document        S.No Document Name                               Description
+                                                                                                                           (in KB)
+                    1    Tendernotice_1.pdf                          NIT                                                           858.56
+
+    Work Item                                                                                                              Document Size
+    Documents       S.No Document Type                  Document Name                         Description
+                                                                                                                           (in KB)
+                    1    Tender Documents               final.pdf                             Tender Document                      1883.14
+                    2    BOQ                            BOQ_610643.xls                        BOQ                                   277.00
+
+
+
+
+     Tender Inviting Authority
+    Name                       Executive Engineer
+    Address                    EE Mahanadi Division CWC Burla Doctors Colony Burla 768017
+
+
+
+
+https://eprocure.gov.in/eprocure/app?component=%24DirectLink&page=FrontEndTenderDetails&service=direct&session=T&sp=SPLyUUIQOJKju%2Fv87Egg…    2/2
+
