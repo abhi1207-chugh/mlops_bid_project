@@ -41,7 +41,7 @@ Routes: `pass_to_technical_evaluation`, `seek_clarification`, `reject_with_cited
 ## The demo case (section 4.1): must be handled correctly
 Tender: NIT Rourkela LTE NITR/PW/CIC-LTE/2026/390 (Supply of Network Switches). A DPIIT-recognised startup with 3-year average turnover Rs 40,00,000 against the tender's Rs 1,50,00,000 (Clause 5) and no past supply (Clause 6). The tender never mentions a startup relaxation. The correct result is **escalate_to_human** citing Clauses 5 and 6, the DoE OMs of 25-Jul-2016 and 20-Sep-2016, and GFR Rule 173(i). The EMD is not a conflict here: Clause 3 already exempts DPIIT startups. See `docs/corpus_confirmation.md` for the 12 test bidders (B1-B12).
 
-Open risk: this tender is live until 26-Nov-2026 and the brief says to use a closed tender only. Confirm with the instructor or switch tenders (fallback in `corpus/archive_unused/`).
+Tender-version clarification: the corpus uses the **updated** NIT Rourkela tender issued 05-Nov-2026, which closed on 08-Nov-2026 at 10:00. The earlier/original tender version had a 26-Nov-2026 closing date; that is not the version used by this project. The updated tender is closed and satisfies the brief's closed-tender requirement. See `docs/corpus_confirmation.md` and `corpus/manifest.json`.
 
 ## Commands
 - `cp .env.example .env` then fill in values
