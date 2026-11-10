@@ -10,7 +10,7 @@ import hashlib
 import redis
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import FileResponse, JSONResponse
-from prometheus_client import Counter, Gauge, make_asgi_app
+from prometheus_client import REGISTRY, Counter, Gauge, make_asgi_app
 
 from common.config import get_settings
 from common.contract import validate_bid
@@ -25,12 +25,31 @@ logger = logging.getLogger("api")
 app = FastAPI(title="Bid Compliance Screening", version="0.1.0")
 app.mount("/metrics", make_asgi_app())
 
-SUBMITTED = Counter("screenings_submitted_total", "Accepted screening requests")
-QUARANTINED = Counter("screenings_quarantined_total", "Requests rejected by validation")
-RATE_LIMITED = Counter("screenings_rate_limited_total", "Requests rejected by client rate limiting")
-FEEDBACK = Counter("screening_feedback_total", "Committee feedback", ["satisfactory"])
-AUTO_SCORES = Counter("screening_auto_scores_total", "Sampled deterministic auto-scores", ["outcome"])
-INDEX_AGE = Gauge("index_age_seconds", "Seconds since the corpus index was built")
+def _metric(metric_type, name: str, documentation: str, labels: list[str] | None = None):
+    """Return an existing process metric when an ASGI module is re-imported.
+
+    Uvicorn reloads and test clients can import this module more than once in one
+    interpreter. Prometheus metrics are process-global, so registering a second
+    collector would make the API fail before it can serve a health response.
+    """
+    try:
+        return metric_type(name, documentation, labels or [])
+    except ValueError:
+        collector_name = name.removesuffix("_total") if metric_type is Counter else name
+        return REGISTRY._names_to_collectors[collector_name]
+
+
+SUBMITTED = _metric(Counter, "screenings_submitted_total", "Accepted screening requests")
+QUARANTINED = _metric(Counter, "screenings_quarantined_total", "Requests rejected by validation")
+RATE_LIMITED = _metric(Counter, "screenings_rate_limited_total", "Requests rejected by client rate limiting")
+FEEDBACK = _metric(Counter, "screening_feedback_total", "Committee feedback", ["satisfactory"])
+AUTO_SCORES = _metric(Counter, "screening_auto_scores_total", "Sampled deterministic auto-scores", ["outcome"])
+AUTO_QUALITY = _metric(Counter, "screening_auto_quality_total", "Sampled automatic quality metric values", ["metric", "outcome"])
+INDEX_AGE = _metric(Gauge, "index_age_seconds", "Seconds since the corpus index was built")
+INDEX_CHUNKS = _metric(Gauge, "index_chunks", "Corpus chunks in the active index")
+INDEX_BUILT_AT = _metric(Gauge, "index_built_timestamp_seconds", "Unix timestamp of the active index build")
+QUEUE_DEPTH = _metric(Gauge, "screening_queue_depth", "Queued screening jobs")
+PROCESSING_DEPTH = _metric(Gauge, "screening_processing_depth", "Screening jobs claimed by workers")
 STATIC = os.path.join(os.path.dirname(__file__), "static")
 
 _store: RunStore | None = None
@@ -79,9 +98,31 @@ def health() -> JSONResponse:
     if meta:
         age = round(time.time() - meta["built_at"], 1)
         INDEX_AGE.set(age)
+        INDEX_CHUNKS.set(meta.get("chunks", 0))
+        INDEX_BUILT_AT.set(meta["built_at"])
+    queue_depth = processing_depth = None
+    if redis_ok:
+        try:
+            queue_depth = store().r.llen(get_settings().queue_key)
+            processing_depth = store().r.llen(get_settings().processing_key)
+            QUEUE_DEPTH.set(queue_depth)
+            PROCESSING_DEPTH.set(processing_depth)
+        except redis.RedisError:
+            redis_ok = False
     body = {"status": "ok" if redis_ok else "degraded", "redis": redis_ok,
-            "index": {"built": bool(meta), "age_seconds": age, "chunks": (meta or {}).get("chunks")}}
+            "index": {"built": bool(meta), "age_seconds": age, "chunks": (meta or {}).get("chunks")},
+            "queue": {"queued": queue_depth, "processing": processing_depth}}
     return JSONResponse(body, status_code=200 if redis_ok else 503)
+
+
+@app.get("/ready")
+def ready() -> JSONResponse:
+    """Readiness requires both the shared queue/store and a usable local corpus index."""
+    response = health()
+    body = json.loads(response.body)
+    is_ready = response.status_code == 200 and body["index"]["built"]
+    body["status"] = "ready" if is_ready else "not_ready"
+    return JSONResponse(body, status_code=200 if is_ready else 503)
 
 
 @app.get("/v1/samples")
@@ -162,11 +203,25 @@ def feedback(run_id: str, body: FeedbackRequest) -> dict:
     if sampled:
         verified = bool(rec.finding and rec.finding.verification and rec.finding.verification.passed)
         cited = bool(rec.finding and rec.finding.citations)
-        auto_score = {"method": "deterministic_verified_citation_check", "grounded": verified and cited,
+        grounded = verified and cited
+        metrics = {"groundedness": float(grounded), "context_relevance": float(cited),
+                   "faithfulness": float(grounded), "hallucination_rate": float(not grounded)}
+        auto_score = {"method": "deterministic_verified_citation_check", "metrics": metrics,
                       "verification_passed": verified, "has_resolved_citations": cited}
-        AUTO_SCORES.labels("grounded" if auto_score["grounded"] else "needs_review").inc()
+        AUTO_SCORES.labels("grounded" if grounded else "needs_review").inc()
+        for metric, value in metrics.items():
+            AUTO_QUALITY.labels(metric, "positive" if value else "negative").inc(value)
     entry = {"received_at": time.time(), "satisfactory": body.satisfactory, "reason": body.reason,
              "auto_score": auto_score}
     store().save_feedback(run_id, entry)
     FEEDBACK.labels(str(body.satisfactory).lower()).inc()
     return {"run_id": run_id, "recorded": True, "sampled_for_auto_score": sampled, "auto_score": auto_score}
+
+
+@app.get("/v1/feedback/summary")
+def feedback_summary() -> dict:
+    """Quality roll-up for L6; source entries remain append-only per run."""
+    try:
+        return store().feedback_summary()
+    except redis.RedisError:
+        raise HTTPException(status_code=503, detail="feedback store unavailable")

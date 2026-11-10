@@ -10,7 +10,6 @@ import json
 import logging
 import re
 import time
-from concurrent.futures import ThreadPoolExecutor, TimeoutError as FutureTimeout
 from typing import Any, TypedDict
 
 from langgraph.graph import END, StateGraph
@@ -32,11 +31,14 @@ MAX_ATTEMPTS = 2
 
 class State(TypedDict, total=False):
     category: str
+    classification: dict[str, Any]
     attempt: int
     strategy: str
     draft: dict
+    routing_finding: Finding
     finding: Finding
     verification_issues: list[str]
+    retry: bool
     transcript: list[str]
     done: bool
 
@@ -100,27 +102,6 @@ class RunContext:
         self.trace.append({"t": time.time(), "kind": kind, **data})
         log(logger, kind, **data)
 
-    def call_tool(self, tool: str, args: dict) -> Any:
-        """Run one tool within its own deadline.
-
-        Corpus tools are intentionally synchronous so their returned passages can be recorded
-        atomically in the current run.  A one-shot executor gives the orchestration layer a
-        hard waiting limit nevertheless: a stuck cache, vector search, or future network-backed
-        tool becomes an observable tool error and the agent can retry or safely escalate.
-        """
-        executor = ThreadPoolExecutor(max_workers=1, thread_name_prefix="corpus-tool")
-        future = executor.submit(self.tools.call, tool, args)
-        try:
-            return future.result(timeout=get_settings().tool_timeout_seconds)
-        except FutureTimeout as exc:
-            future.cancel()
-            raise TimeoutError(f"{tool} exceeded TOOL_TIMEOUT_SECONDS") from exc
-        finally:
-            # Do not hold up the agent loop for a timed-out lower-level call.  Redis already
-            # has socket timeouts; CPU retrieval has no external side effect.
-            executor.shutdown(wait=False, cancel_futures=True)
-
-
 def escalation(ctx: RunContext, reason: str, summary: str, questions: list[str] | None = None,
                category: str | None = None, verification: Verification | None = None) -> Finding:
     return Finding(run_id=ctx.run_id, route="escalate_to_human", summary=summary, escalation_reason=reason,
@@ -130,6 +111,16 @@ def escalation(ctx: RunContext, reason: str, summary: str, questions: list[str] 
 
 def build_graph(ctx: RunContext):
     claimed = ctx.bid.get("bidder_category_claimed")
+
+    def valid_final(output: dict) -> bool:
+        """Accept only the structured final contract before verification sees it."""
+        return (
+            isinstance(output.get("route"), str)
+            and isinstance(output.get("summary"), str)
+            and isinstance(output.get("conditions", []), list)
+            and isinstance(output.get("citations", []), list)
+            and isinstance(output.get("committee_questions", []), list)
+        )
 
     def classify(state: State) -> State:
         out = ctx.ask("classifier", bid=json.dumps(ctx.bid, indent=1), flags=json.dumps(ctx.flags))
@@ -150,7 +141,18 @@ def build_graph(ctx: RunContext):
                 f"The corpus (tender, DoE/DPE orders, GFR Chapter 6, MSME circular) contains no provision on {cat} bidders; "
                 "no determination can be supported.",
                 [f"Which rules govern {cat} bidders for this tender?"], category=cat)}
-        return {"category": cat, "attempt": 0, "strategy": ""}
+        classification = {
+            "category": cat,
+            "confidence": str((out or {}).get("confidence", "unknown")),
+            "reason": str((out or {}).get("reason", "")),
+            "entities": (out or {}).get("entities", {}),
+        }
+        if not isinstance(classification["entities"], dict):
+            return {"category": cat, "done": True, "finding": escalation(
+                ctx, "classifier_output_invalid", "The classifier returned malformed qualification entities; escalating.",
+                ["Please confirm the bidder category and qualification entities."], category=cat)}
+        ctx.event("classification_handoff", category=cat, entity_fields=sorted(classification["entities"]))
+        return {"category": cat, "classification": classification, "attempt": 0, "strategy": ""}
 
     def compliance(state: State) -> State:
         attempt = state.get("attempt", 0) + 1
@@ -164,7 +166,7 @@ def build_graph(ctx: RunContext):
                     ctx, "run_incomplete", "The agent loop ran out of its step, tool-call or time budget before it could "
                     "produce a verified finding.", ["Please screen this bid manually."], category=state["category"])}
             out = ctx.ask("compliance", bid=json.dumps(ctx.bid, indent=1), flags=json.dumps(ctx.flags),
-                          category=state["category"], strategy=strategy_txt,
+                          category=state["category"], classification=json.dumps(state["classification"], indent=1), strategy=strategy_txt,
                           transcript="\n".join(transcript) or "(no tool calls yet)")
             if out is None:
                 transcript.append("SYSTEM: your last reply was not valid JSON. Reply with one JSON object.")
@@ -172,7 +174,9 @@ def build_graph(ctx: RunContext):
             if out.get("action") == "tool":
                 tool, args = str(out.get("tool")), out.get("args") or {}
                 try:
-                    result = ctx.call_tool(tool, args if isinstance(args, dict) else {})
+                    if not isinstance(args, dict):
+                        raise ValueError("tool args must be a JSON object")
+                    result = ctx.tools.call(tool, args)
                 except Exception as exc:  # unknown tool / bad args: tell the model, keep the bound
                     result = {"error": f"{type(exc).__name__}: {exc}"}
                     ctx.event("tool_failure", tool=tool, error=type(exc).__name__)
@@ -181,6 +185,9 @@ def build_graph(ctx: RunContext):
                 transcript.append(f"ASSISTANT: {json.dumps(out)}\nTOOL_RESULT: {json.dumps(result)}")
                 continue
             if out.get("action") == "final":
+                if not valid_final(out):
+                    transcript.append("SYSTEM: final output must contain route, summary, conditions, citations, and committee_questions with JSON-compatible types.")
+                    continue
                 transcript.append(f"ASSISTANT: {json.dumps(out)}")
                 return {"attempt": attempt, "draft": out, "transcript": transcript}
             transcript.append("SYSTEM: 'action' must be 'tool' or 'final'.")
@@ -196,19 +203,36 @@ def build_graph(ctx: RunContext):
             *(str(c.get("evidence", "")) for c in d.get("conditions", []) or []),
             *(str(q) for q in d.get("committee_questions", []) or []),
         ])
-        if reason := unsafe_output_reason(visible_text):
+        # Scan the complete structured candidate, including citation quotes and
+        # fields not shown in the summary.  No unsafe model text reaches the API.
+        if reason := unsafe_output_reason(json.dumps(d, ensure_ascii=False)):
             issues.append(f"final wording safety check failed: {reason}")
         top, iss = resolve_citations(d.get("citations", []), ctx.tools.retrieved)
         issues += iss
         conditions: list[ConditionFinding] = []
-        for c in d.get("conditions", []) or []:
+        raw_conditions = d.get("conditions", [])
+        if not isinstance(raw_conditions, list):
+            issues.append("conditions must be a JSON array")
+            raw_conditions = []
+        for c in raw_conditions:
+            if not isinstance(c, dict):
+                issues.append("each condition must be a JSON object")
+                continue
             cc, iss = resolve_citations(c.get("citations", []), ctx.tools.retrieved)
             issues += iss
             status = c.get("status") if c.get("status") in ("met", "unmet", "unclear") else "unclear"
-            conditions.append(ConditionFinding(condition=str(c.get("condition", "")), clause_ref=c.get("clause_ref"),
+            clause_ref = c.get("clause_ref")
+            if clause_ref is not None and not isinstance(clause_ref, str):
+                issues.append("condition clause_ref must be a string or null")
+                clause_ref = None
+            if clause_ref and cc and clause_ref not in {citation.clause_ref for citation in cc}:
+                issues.append(f"condition clause_ref {clause_ref!r} does not match its resolved citation")
+            conditions.append(ConditionFinding(condition=str(c.get("condition", "")), clause_ref=clause_ref,
                                                status=status, evidence=str(c.get("evidence", "")), citations=cc))
-        if route in ("pass_to_technical_evaluation", "reject_with_cited_condition", "seek_clarification") and not (top or any(c.citations for c in conditions)):
-            issues.append("a non-escalation route requires at least one resolved citation")
+        if not conditions:
+            issues.append("a finding must contain at least one mandatory-condition assessment")
+        if not (top or any(c.citations for c in conditions)):
+            issues.append("a model-produced finding requires at least one resolved citation")
         if route == "reject_with_cited_condition" and not any(c.status == "unmet" and c.citations for c in conditions):
             issues.append("reject requires an unmet condition with a resolved citation")
         if route == "pass_to_technical_evaluation" and any(c.status != "met" for c in conditions):
@@ -257,7 +281,7 @@ def build_graph(ctx: RunContext):
                 note = ("SYSTEM: the verifier REJECTED your final answer. Problems:\n- " + "\n- ".join(issues + ([suggestion] if suggestion else [])) +
                         "\nYour earlier tool results are still above. Make ONLY the missing tool calls the problems ask for "
                         "(exact get_clause / search_corpus calls), then send a corrected final answer that cites every required provision.")
-                return {"transcript": state.get("transcript", []) + [note], "verification_issues": issues}
+                return {"transcript": state.get("transcript", []) + [note], "verification_issues": issues, "retry": True}
             return {"done": True, "finding": escalation(
                 ctx, "verification_failed", "The draft finding could not be verified against the retrieved passages; "
                 "escalating rather than returning an unverified answer.", ["Please screen this bid manually."],
@@ -270,16 +294,49 @@ def build_graph(ctx: RunContext):
                                else ("tender_policy_conflict_or_undecidable" if route == "escalate_to_human" else None)),
             verification=ver, bidder_category=state["category"], steps=ctx.steps, tool_calls=ctx.tools.calls,
             prompt_versions=ctx.prompt_versions, usage=ctx.usage)
+        ctx.event("verification_handoff", route=route, conditions=len(conditions))
+        return {"routing_finding": finding, "retry": False}
+
+    def route(state: State) -> State:
+        """Decision/routing agent: deterministically route only verified condition outputs.
+
+        The compliance model may propose a route, but it cannot override these safety
+        invariants.  A policy-conflict escalation is retained; otherwise status precedence is
+        unclear -> clarification, unmet -> cited rejection, all met -> technical evaluation.
+        """
+        finding = state["routing_finding"]
+        statuses = {condition.status for condition in finding.conditions}
+        proposed = finding.route
+        if proposed == "escalate_to_human":
+            final_route = proposed
+        elif "unclear" in statuses:
+            final_route = "seek_clarification"
+        elif "unmet" in statuses:
+            startup_or_mse_conflict = finding.bidder_category in {"startup", "mse"} and any(
+                condition.status == "unmet" and re.search(r"turnover|experience", condition.condition, re.I)
+                for condition in finding.conditions
+            )
+            final_route = "escalate_to_human" if startup_or_mse_conflict else "reject_with_cited_condition"
+        else:
+            final_route = "pass_to_technical_evaluation"
+        if final_route != proposed:
+            ctx.event("route_corrected", proposed=proposed, final=final_route)
+            finding.route = final_route
+            if final_route == "escalate_to_human" and not finding.escalation_reason:
+                finding.escalation_reason = "tender_policy_conflict_or_undecidable"
+        ctx.event("routed", route=finding.route, condition_statuses=sorted(statuses))
         return {"done": True, "finding": finding}
 
     g = StateGraph(State)
     g.add_node("classify", classify)
     g.add_node("compliance", compliance)
     g.add_node("verify", verify)
+    g.add_node("route", route)
     g.set_entry_point("classify")
     g.add_conditional_edges("classify", lambda s: END if s.get("done") else "compliance")
     g.add_conditional_edges("compliance", lambda s: END if s.get("done") else "verify")
-    g.add_conditional_edges("verify", lambda s: END if s.get("done") else "compliance")
+    g.add_conditional_edges("verify", lambda s: END if s.get("done") else "compliance" if s.get("retry") else "route")
+    g.add_edge("route", END)
     return g.compile()
 
 

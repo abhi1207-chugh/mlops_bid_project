@@ -79,11 +79,18 @@ def validate_bid(payload: Any) -> tuple[BidSummary | None, list[dict]]:
         return None, [{"field": "(body)", "message": "request body must be a JSON object", "type": "type_error"}]
     try:
         model = BidSummary.model_validate(payload)
-        remarks = model.remarks or ""
-        if any(re.search(pattern, remarks, re.IGNORECASE | re.DOTALL) for pattern in _INJECTION_PATTERNS):
-            return None, [{"field": "remarks", "message": "contains a prompt-injection pattern; request was blocked before an agent run", "type": "prompt_injection"}]
-        if reason := unsafe_input_reason(remarks):
-            return None, [{"field": "remarks", "message": f"{reason}; request was blocked before an agent run", "type": "unsafe_content"}]
+        # Every string in this model is later serialised into an agent prompt.  Do
+        # not protect just ``remarks`` and leave bidder_name, item_category, or a
+        # registration identifier as a prompt-injection bypass.
+        for field, value in model.model_dump(exclude_none=True).items():
+            values = value if isinstance(value, list) else [value]
+            for item in values:
+                if not isinstance(item, str):
+                    continue
+                if any(re.search(pattern, item, re.IGNORECASE | re.DOTALL) for pattern in _INJECTION_PATTERNS):
+                    return None, [{"field": field, "message": "contains a prompt-injection pattern; request was blocked before an agent run", "type": "prompt_injection"}]
+                if reason := unsafe_input_reason(item):
+                    return None, [{"field": field, "message": f"{reason}; request was blocked before an agent run", "type": "unsafe_content"}]
         return model, []
     except ValidationError as exc:
         errors = []

@@ -10,9 +10,13 @@ import re
 from dataclasses import dataclass
 
 from fastapi import FastAPI
+from prometheus_client import Counter, Histogram, make_asgi_app
 
 app = FastAPI(title="stub-llm")
+app.mount("/metrics", make_asgi_app())
 DELAY_MS = int(os.getenv("STUB_DELAY_MS", "1500"))
+REQUESTS = Counter("stub_llm_requests_total", "Stub LLM generation requests", ["step"])
+LATENCY = Histogram("stub_llm_request_seconds", "Stub LLM generation latency", ["step"])
 
 
 @app.get("/health")
@@ -121,8 +125,10 @@ def _compliance(prompt: str) -> dict:
 
 @app.post("/v1/generate")
 async def generate(payload: dict) -> dict:
-    await asyncio.sleep(DELAY_MS / 1000)
     step, prompt = payload.get("step", ""), payload.get("prompt", "")
+    REQUESTS.labels(step or "unknown").inc()
+    with LATENCY.labels(step or "unknown").time():
+        await asyncio.sleep(DELAY_MS / 1000)
     body = {"classifier": _classifier, "compliance": _compliance}.get(step)
     out = body(prompt) if body else {"verdict": "pass", "issues": [], "suggested_strategy": ""}
     return {"text": json.dumps(out), "usage": {"prompt_tokens": max(1, len(prompt) // 4), "completion_tokens": 150}}

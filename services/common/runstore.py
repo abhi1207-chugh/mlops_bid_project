@@ -41,6 +41,14 @@ class RunStore:
         rec.updated_at = time.time()
         self.r.set(self._key(rec.run_id), rec.model_dump_json())
 
+    def heartbeat(self, run_id: str) -> bool:
+        """Renew a running job lease without overwriting its finding or other state."""
+        rec = self.get(run_id)
+        if rec is None or rec.status != "running":
+            return False
+        self.save(rec)
+        return True
+
     def get(self, run_id: str) -> RunRecord | None:
         raw = self.r.get(self._key(run_id))
         return RunRecord.model_validate_json(raw) if raw else None
@@ -64,6 +72,32 @@ class RunStore:
 
     def feedback(self, run_id: str) -> list[dict]:
         return [json.loads(item) for item in self.r.lrange(f"feedback:{run_id}", 0, -1)]
+
+    def feedback_summary(self) -> dict:
+        """Aggregate persisted committee feedback without mutating screening records."""
+        total = satisfactory = sampled = 0
+        quality_totals: dict[str, float] = {}
+        quality_counts: dict[str, int] = {}
+        for key in self.r.scan_iter(match="feedback:*"):
+            for entry in self.r.lrange(key, 0, -1):
+                try:
+                    item = json.loads(entry)
+                except ValueError:
+                    continue
+                total += 1
+                satisfactory += bool(item.get("satisfactory"))
+                score = item.get("auto_score") or {}
+                metrics = score.get("metrics") or {}
+                if metrics:
+                    sampled += 1
+                for metric, value in metrics.items():
+                    if isinstance(value, (int, float, bool)):
+                        quality_totals[metric] = quality_totals.get(metric, 0.0) + float(value)
+                        quality_counts[metric] = quality_counts.get(metric, 0) + 1
+        return {"total": total, "satisfactory": satisfactory, "unsatisfactory": total - satisfactory,
+                "sampled_auto_scores": sampled,
+                "auto_quality": {metric: quality_totals[metric] / quality_counts[metric]
+                                 for metric in sorted(quality_totals)}}
 
     def recover_processing(self, stale_after: int = 120) -> int:
         """Requeue expired processing entries; only reclaim records whose heartbeat is stale."""

@@ -145,14 +145,53 @@ def test_autonomous_determination_wording_is_never_returned():
     assert any("safety check" in issue for issue in f.verification.issues)
 
 
+def test_routing_node_corrects_an_inconsistent_clarification_route():
+    good = json.loads(json.dumps(GOOD))
+    good["route"] = "seek_clarification"
+    good["conditions"][0]["status"] = "met"
+    finding, trace = run_screening(
+        "r1", {"bidder_category_claimed": "large_enterprise"}, [],
+        Scripted([SEARCH, good], category="large_enterprise"), FakeTools({}),
+    )
+    assert finding.route == "pass_to_technical_evaluation"
+    assert any(event["kind"] == "route_corrected" for event in trace)
+
+
+def test_ungrounded_escalation_retries_then_escalates_with_verification_failure():
+    ungrounded = {
+        "action": "final", "route": "escalate_to_human", "summary": "manual review needed",
+        "conditions": [{"condition": "turnover", "clause_ref": "Clause 5", "status": "unclear", "evidence": "unknown", "citations": []}],
+        "citations": [], "committee_questions": ["Review it"],
+    }
+    finding = run(Scripted([SEARCH, ungrounded, ungrounded], category="large_enterprise"),
+                  {"bidder_category_claimed": "large_enterprise"})
+    assert finding.escalation_reason == "verification_failed"
+    assert finding.verification and any("resolved citation" in issue for issue in finding.verification.issues)
+
+
+def test_condition_clause_reference_must_match_resolved_evidence():
+    wrong_ref = json.loads(json.dumps(GOOD))
+    wrong_ref["conditions"][0]["clause_ref"] = "Clause 999"
+    finding = run(Scripted([SEARCH, wrong_ref, wrong_ref], category="large_enterprise"),
+                  {"bidder_category_claimed": "large_enterprise"})
+    assert finding.escalation_reason == "verification_failed"
+    assert finding.verification and any("does not match" in issue for issue in finding.verification.issues)
+
+
 def test_tool_timeout_is_returned_to_the_agent_and_never_becomes_a_confident_finding(monkeypatch):
     monkeypatch.setenv("TOOL_TIMEOUT_SECONDS", "0.01")
 
     class SlowTools(FakeTools):
-        def call(self, tool, args):
+        def _execute_tool(self, tool, args):
             time.sleep(0.05)
-            return super().call(tool, args)
+            return super()._execute_tool(tool, args)
 
     finding, trace = run_screening("r1", BID, [], Scripted([SEARCH] * 50), SlowTools(BID))
     assert finding.escalation_reason == "run_incomplete"
     assert any(event["kind"] == "tool_failure" and event["error"] == "TimeoutError" for event in trace)
+
+
+def test_retrieval_tool_returns_its_dispatched_result():
+    tools = FakeTools(BID)
+    result = tools.call("search_corpus", {"query": "turnover"})
+    assert result and result[0]["chunk_id"] == "T:p2:clause5"

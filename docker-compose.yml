@@ -8,6 +8,9 @@
 services:
   redis:
     image: redis:7-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redisdata:/data
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
@@ -55,6 +58,10 @@ services:
       LLM_PROVIDER: ${LLM_PROVIDER:-stub}
       LLM_BASE_URL: ${LLM_BASE_URL:-http://stub-llm:8080}
       PROMPT_VERSION: ${PROMPT_VERSION:-v1}
+      # The embedding model is baked into the worker image; runtime screening must
+      # not depend on an external model hub or an API token.
+      HF_HUB_OFFLINE: "1"
+      TRANSFORMERS_OFFLINE: "1"
     volumes:
       - appdata:/data
       - ./artifacts:/artifacts
@@ -66,6 +73,11 @@ services:
     # Do not set container_name or host ports here: this service must scale with --scale worker=3
     expose:
       - "9100"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:9100/ready')"]
+      interval: 10s
+      timeout: 3s
+      retries: 12
 
   prometheus:
     image: prom/prometheus:latest
@@ -75,6 +87,11 @@ services:
       - "9090:9090"
     depends_on:
       - api
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "-", "http://localhost:9090/-/healthy"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
 
   grafana:
     image: grafana/grafana:latest
@@ -85,9 +102,14 @@ services:
       - ./observability/grafana-dashboard.json:/var/lib/grafana/dashboards/bid-compliance.json:ro
       - ./observability/grafana-provisioning.yaml:/etc/grafana/provisioning/dashboards/bid-compliance.yaml:ro
     ports:
-      - "${GRAFANA_PORT:-3000}:3000"
+      - "${GRAFANA_PORT:-3002}:3000"
     depends_on:
       - prometheus
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://localhost:3000/api/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
 
   jaeger:
     image: jaegertracing/all-in-one:latest
@@ -95,6 +117,12 @@ services:
       COLLECTOR_OTLP_ENABLED: "true"
     ports:
       - "16686:16686"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "-", "http://localhost:16686/"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
 
 volumes:
   appdata:
+  redisdata:

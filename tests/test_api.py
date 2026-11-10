@@ -61,3 +61,31 @@ def test_rate_limit_rejects_without_creating_another_run(client, monkeypatch):
     limited = c.post("/v1/screenings", json=bid)
     assert limited.status_code == 429
     assert main.store().r.llen("runs:queue") == 1
+
+
+def test_health_and_readiness_report_index_state(client, tmp_path, monkeypatch):
+    c, _ = client
+    monkeypatch.setenv("INDEX_DIR", str(tmp_path / "index"))
+    assert c.get("/health").status_code == 200
+    assert c.get("/ready").status_code == 503
+    index_dir = tmp_path / "index"
+    index_dir.mkdir()
+    (index_dir / "index_meta.json").write_text('{"built_at": 1, "chunks": 7}')
+    ready = c.get("/ready")
+    assert ready.status_code == 200
+    assert ready.json()["index"]["chunks"] == 7
+
+
+def test_feedback_is_persisted_aggregated_and_auto_scored(client, monkeypatch):
+    import json
+    monkeypatch.setenv("AUTO_SCORE_SAMPLE_RATE", "1")
+    c, _ = client
+    bid = next(b for b in json.load(open("/app/eval/bidders.json")) if b["id"] == "B2")["bid"]
+    run_id = c.post("/v1/screenings", json=bid).json()["run_id"]
+    response = c.post(f"/v1/screenings/{run_id}/feedback", json={"satisfactory": True, "reason": "reviewed"})
+    assert response.status_code == 201
+    assert set(response.json()["auto_score"]["metrics"]) == {"groundedness", "context_relevance", "faithfulness", "hallucination_rate"}
+    summary = c.get("/v1/feedback/summary").json()
+    assert summary["total"] == 1
+    assert summary["satisfactory"] == 1
+    assert summary["sampled_auto_scores"] == 1

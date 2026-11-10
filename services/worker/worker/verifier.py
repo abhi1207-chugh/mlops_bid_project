@@ -24,8 +24,16 @@ def resolve_citations(raw: list[dict], retrieved: dict[str, dict]) -> tuple[list
     """Return (resolved citations with doc_id/clause_ref taken from the corpus, issues)."""
     out: list[Citation] = []
     issues: list[str] = []
-    for c in raw or []:
+    if not isinstance(raw, list):
+        return [], ["citations must be a JSON array"]
+    for c in raw:
+        if not isinstance(c, dict):
+            issues.append("each citation must be a JSON object")
+            continue
         cid = str(c.get("chunk_id", ""))
+        if not cid:
+            issues.append("citation is missing chunk_id")
+            continue
         chunk = retrieved.get(cid)
         if chunk is None:
             issues.append(f"citation {cid!r} was not retrieved in this run")

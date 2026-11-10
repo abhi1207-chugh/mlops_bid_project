@@ -15,25 +15,35 @@ import redis
 
 from common.config import get_settings
 
+_LOAD_LOCK = threading.Lock()
+
 
 @lru_cache(maxsize=1)
 def _load():
-    from langchain_community.vectorstores import FAISS
-    from pipeline.embeddings import LocalEmbeddings
+    # functools.lru_cache protects its dictionary, not an in-flight cache miss.  Without
+    # this lock a timed-out first request can start several costly duplicate model loads.
+    with _LOAD_LOCK:
+        from langchain_community.vectorstores import FAISS
+        from pipeline.embeddings import LocalEmbeddings
 
-    s = get_settings()
-    emb = LocalEmbeddings(s.embedding_model)
+        s = get_settings()
+        emb = LocalEmbeddings(s.embedding_model)
 
-    store = FAISS.load_local(
-        os.path.join(s.index_dir, "faiss"),
-        emb,
-        allow_dangerous_deserialization=True
-    )
+        store = FAISS.load_local(
+            os.path.join(s.index_dir, "faiss"),
+            emb,
+            allow_dangerous_deserialization=True
+        )
 
-    with open(os.path.join(s.index_dir, "chunks.jsonl")) as f:
-        chunks = [json.loads(line) for line in f]
+        with open(os.path.join(s.index_dir, "chunks.jsonl")) as f:
+            chunks = [json.loads(line) for line in f]
 
-    return store, {c["chunk_id"]: c for c in chunks}
+        return store, {c["chunk_id"]: c for c in chunks}
+
+
+def warm_corpus() -> None:
+    """Load embeddings and FAISS before accepting work; this is not an agent tool call."""
+    _load()
 
 
 def _norm_ref(x: str) -> str:
@@ -282,4 +292,4 @@ class CorpusTools:
                 f"Tool '{tool}' failed with an unexpected result"
             )
 
-      
+        return result

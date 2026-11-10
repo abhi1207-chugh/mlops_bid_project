@@ -19,3 +19,11 @@ def test_unretrieved_and_fabricated_citations_fail():
     assert "does not appear" in issues[0]
     _, issues = resolve_citations([{"chunk_id": "S:1", "quote": "old order"}], R)
     assert "superseded" in issues[0]
+
+
+def test_malformed_citation_payloads_fail_closed():
+    _, issues = resolve_citations({"chunk_id": "T:1"}, R)
+    assert issues == ["citations must be a JSON array"]
+    _, issues = resolve_citations(["not-an-object", {"quote": "turnover"}], R)
+    assert "JSON object" in issues[0]
+    assert "missing chunk_id" in issues[1]

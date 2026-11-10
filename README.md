@@ -31,4 +31,6 @@ API/web: `http://localhost:8000` · Prometheus: `http://localhost:9090` · Grafa
 
 The required B1 demo is a low-turnover DPIIT startup with no experience. It must escalate with clauses 5/6, both DoE orders, and GFR Rule 173(i). Failed, incomplete, or unverified work always escalates. See [runbook](docs/RUNBOOK.md), [measurement protocol](docs/PHASE3_RESULTS.md), and [report](docs/REPORT.md).
 
+For LLMOps evidence and the exact L2--L6 evaluation/guardrail/cost/feedback methods, see [LLMOps notes](docs/LLMOPS.md). After a batch evaluation, compare prompt variants in `artifacts/eval-prompt-comparison.json`; feedback quality is available from `GET /v1/feedback/summary` and Grafana.
+
 The corpus uses the updated NIT Rourkela tender, which closed on 08-Nov-2026. Its schedule and source details are recorded in `docs/corpus_confirmation.md`.

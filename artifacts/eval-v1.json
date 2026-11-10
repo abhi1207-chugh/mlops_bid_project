@@ -1,0 +1,2458 @@
+{
+  "prompt_version": "v1",
+  "total": 20,
+  "passed": 14,
+  "route_accuracy": 0.7,
+  "metrics": {
+    "evaluated_findings": 18,
+    "groundedness": 0.5555555555555556,
+    "context_relevance": 0.5555555555555556,
+    "faithfulness": 0.5555555555555556,
+    "hallucination_rate": 0.4444444444444444
+  },
+  "results": [
+    {
+      "id": "B1",
+      "expected": "escalate_to_human",
+      "actual": "escalate_to_human",
+      "expected_support": [
+        [
+          "TENDER-NITR-390",
+          "Clause 5"
+        ],
+        [
+          "TENDER-NITR-390",
+          "Clause 6"
+        ],
+        [
+          "GFR-2017-CH6",
+          "Rule 173(i)"
+        ]
+      ],
+      "passed": true,
+      "result": {
+        "run_id": "201cd576-2fe8-43cc-bb7b-fb093a110b2b",
+        "status": "escalated",
+        "flags": [],
+        "finding": {
+          "run_id": "201cd576-2fe8-43cc-bb7b-fb093a110b2b",
+          "route": "escalate_to_human",
+          "summary": "Tender turnover and experience conditions conflict with startup-relaxation policy provisions; committee review is required.",
+          "conditions": [
+            {
+              "condition": "turnover",
+              "clause_ref": "Clause 5",
+              "status": "unmet",
+              "evidence": "Bid turnover is Rs. 4,000,000, below Rs. 1,50,00,000.",
+              "citations": [
+                {
+                  "doc_id": "TENDER-NITR-390",
+                  "clause_ref": "Clause 5",
+                  "chunk_id": "TENDER-NITR-390:p2:clause5",
+                  "quote": "5. Bidder Turn Over Criteria: The minimum average annual financial turnover of the bidder during the three financial years, ending on 31st March 2026, should be Rs. 1,50,00,000 (On"
+                }
+              ]
+            },
+            {
+              "condition": "experience",
+              "clause_ref": "Clause 6",
+              "status": "unmet",
+              "evidence": "The bid reports no similar-work supply experience.",
+              "citations": [
+                {
+                  "doc_id": "TENDER-NITR-390",
+                  "clause_ref": "Clause 6",
+                  "chunk_id": "TENDER-NITR-390:p2:clause6",
+                  "quote": "6. Bidder Experience Criteria: The bidder must have supplied same or similar category products during last 5 financial years ending on 31 March 2026. Relevant documents in support "
+                }
+              ]
+            },
+            {
+              "condition": "EMD / bid security",
+              "clause_ref": "Clause 3",
+              "status": "met",
+              "evidence": "DPIIT evidence and declaration are supplied.",
+              "citations": [
+                {
+                  "doc_id": "TENDER-NITR-390",
+                  "clause_ref": "Clause 3",
+                  "chunk_id": "TENDER-NITR-390:p2:clause3",
+                  "quote": "3. Startup(s) as recognized by Department for Promotion of Industry and Internal Trade (DPIIT), Govt. of India, are exempted from paying EMD/Bid Security. However, they have to enc"
+                }
+              ]
+            }
+          ],
+          "citations": [
+            {
+              "doc_id": "TENDER-NITR-390",
+              "clause_ref": "Clause 5",
+              "chunk_id": "TENDER-NITR-390:p2:clause5",
+              "quote": "5. Bidder Turn Over Criteria: The minimum average annual financial turnover of the bidder during the three financial years, ending on 31st March 2026, should be Rs. 1,50,00,000 (On"
+            },
+            {
+              "doc_id": "TENDER-NITR-390",
+              "clause_ref": "Clause 6",
+              "chunk_id": "TENDER-NITR-390:p2:clause6",
+              "quote": "6. Bidder Experience Criteria: The bidder must have supplied same or similar category products during last 5 financial years ending on 31 March 2026. Relevant documents in support "
+            },
+            {
+              "doc_id": "TENDER-NITR-390",
+              "clause_ref": "Clause 3",
+              "chunk_id": "TENDER-NITR-390:p2:clause3",
+              "quote": "3. Startup(s) as recognized by Department for Promotion of Industry and Internal Trade (DPIIT), Govt. of India, are exempted from paying EMD/Bid Security. However, they have to enc"
+            },
+            {
+              "doc_id": "DOE-OM-2016-07-25",
+              "clause_ref": "Para 3",
+              "chunk_id": "DOE-OM-2016-07-25:p4:para3",
+              "quote": "3. As per Rule 160(i)(a) of GFR, 2005, there Is already a provision that the bidding document should contain criteria for eligibility and qualification to be met by the bidders suc"
+            },
+            {
+              "doc_id": "DOE-OM-2016-09-20",
+              "clause_ref": "Para 2",
+              "chunk_id": "DOE-OM-2016-09-20:p3:para2",
+              "quote": "2. A doubt has arisen if it makes optional for Central Ministries/ Departments to relax condition of prior experience and prior turnover in public procurement to Startups. In this "
+            },
+            {
+              "doc_id": "GFR-2017-CH6",
+              "clause_ref": "Rule 173(i)",
+              "chunk_id": "GFR-2017-CH6:p11:rule173i",
+              "quote": "Rule 173 (i) The text of the bidding document should be selfcontained and comprehensive without any ambiguities. All essential information, which a bidder needs for sending respons"
+            }
+          ],
+          "committee_questions": [
+            "Does Rule 173(i) apply where this tender has no suitable provision?",
+            "Does the bidder meet the quality and technical specifications?"
+          ],
+          "escalation_reason": "tender_policy_conflict_or_undecidable",
+          "verification": {
+            "passed": true,
+            "attempts": 1,
+            "issues": []
+          },
+          "bidder_category": "startup",
+          "steps": 9,
+          "tool_calls": 6,
+          "prompt_versions": {
+            "classifier": "classifier/v1",
+            "compliance": "compliance/v1",
+            "verifier": "verifier/v1"
+          },
+          "usage": [
+            {
+              "step": "classifier",
+              "prompt_version": "classifier/v1",
+              "prompt_tokens": 567,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1534.6552089904435
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 1811,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1523.9102089981316
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2002,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1511.0658339981455
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2147,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1517.2604179970222
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2299,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1517.178125999635
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2613,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1513.97229199938
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2810,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1538.6884589970578
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 3133,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1519.7126679995563
+            },
+            {
+              "step": "verifier",
+              "prompt_version": "verifier/v1",
+              "prompt_tokens": 2310,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1527.4016680050408
+            }
+          ],
+          "disclaimer": "Screening finding only. A tender committee decides; this system never rejects or qualifies a bid on its own authority."
+        }
+      }
+    },
+    {
+      "id": "B2",
+      "expected": "pass_to_technical_evaluation",
+      "actual": "pass_to_technical_evaluation",
+      "expected_support": [
+        [
+          "TENDER-NITR-390",
+          "Clause 5"
+        ],
+        [
+          "TENDER-NITR-390",
+          "Clause 6"
+        ]
+      ],
+      "passed": true,
+      "result": {
+        "run_id": "e18312ad-ae63-48b8-93c1-6919b13911e0",
+        "status": "done",
+        "flags": [],
+        "finding": {
+          "run_id": "e18312ad-ae63-48b8-93c1-6919b13911e0",
+          "route": "pass_to_technical_evaluation",
+          "summary": "The supplied summary meets the screened mandatory conditions and should proceed to technical evaluation.",
+          "conditions": [
+            {
+              "condition": "turnover",
+              "clause_ref": "Clause 5",
+              "status": "met",
+              "evidence": "Bid turnover is Rs. 25,000,000, meeting the tender minimum.",
+              "citations": [
+                {
+                  "doc_id": "TENDER-NITR-390",
+                  "clause_ref": "Clause 5",
+                  "chunk_id": "TENDER-NITR-390:p2:clause5",
+                  "quote": "5. Bidder Turn Over Criteria: The minimum average annual financial turnover of the bidder during the three financial years, ending on 31st March 2026, should be Rs. 1,50,00,000 (On"
+                }
+              ]
+            },
+            {
+              "condition": "experience",
+              "clause_ref": "Clause 6",
+              "status": "met",
+              "evidence": "The bid reports similar-work experience.",
+              "citations": [
+                {
+                  "doc_id": "TENDER-NITR-390",
+                  "clause_ref": "Clause 6",
+                  "chunk_id": "TENDER-NITR-390:p2:clause6",
+                  "quote": "6. Bidder Experience Criteria: The bidder must have supplied same or similar category products during last 5 financial years ending on 31 March 2026. Relevant documents in support "
+                }
+              ]
+            },
+            {
+              "condition": "EMD / bid security",
+              "clause_ref": "Clause 1",
+              "status": "met",
+              "evidence": "The bid records EMD payment.",
+              "citations": [
+                {
+                  "doc_id": "TENDER-NITR-390",
+                  "clause_ref": "Clause 1",
+                  "chunk_id": "TENDER-NITR-390:p2:clause1",
+                  "quote": "1. Tender Fee & Earnest Money Deposit (EMD): A non-refundable Tender Fee of Rs. 1500/- (Rupees One Thousand Five hundred only) and refundable EMD of Rs. 1,00,000/- (Rupees One Lakh"
+                }
+              ]
+            },
+            {
+              "condition": "mandatory documents",
+              "clause_ref": "Clause 11",
+              "status": "met",
+              "evidence": "The required documents are present in the bid summary.",
+              "citations": [
+                {
+                  "doc_id": "TENDER-NITR-390",
+                  "clause_ref": "Clause 11",
+                  "chunk_id": "TENDER-NITR-390:p3:clause11",
+                  "quote": "11. Documents to be submitted: (i) Cover \u2013 I: Technical Part (all documents must be self-attested) a) Copy of Valid Legal Status (Proprietorship / Partnership / Public Limited / Pr"
+                }
+              ]
+            }
+          ],
+          "citations": [
+            {
+              "doc_id": "TENDER-NITR-390",
+              "clause_ref": "Clause 5",
+              "chunk_id": "TENDER-NITR-390:p2:clause5",
+              "quote": "5. Bidder Turn Over Criteria: The minimum average annual financial turnover of the bidder during the three financial years, ending on 31st March 2026, should be Rs. 1,50,00,000 (On"
+            },
+            {
+              "doc_id": "TENDER-NITR-390",
+              "clause_ref": "Clause 6",
+              "chunk_id": "TENDER-NITR-390:p2:clause6",
+              "quote": "6. Bidder Experience Criteria: The bidder must have supplied same or similar category products during last 5 financial years ending on 31 March 2026. Relevant documents in support "
+            },
+            {
+              "doc_id": "TENDER-NITR-390",
+              "clause_ref": "Clause 1",
+              "chunk_id": "TENDER-NITR-390:p2:clause1",
+              "quote": "1. Tender Fee & Earnest Money Deposit (EMD): A non-refundable Tender Fee of Rs. 1500/- (Rupees One Thousand Five hundred only) and refundable EMD of Rs. 1,00,000/- (Rupees One Lakh"
+            },
+            {
+              "doc_id": "TENDER-NITR-390",
+              "clause_ref": "Clause 11",
+              "chunk_id": "TENDER-NITR-390:p3:clause11",
+              "quote": "11. Documents to be submitted: (i) Cover \u2013 I: Technical Part (all documents must be self-attested) a) Copy of Valid Legal Status (Proprietorship / Partnership / Public Limited / Pr"
+            }
+          ],
+          "committee_questions": [],
+          "escalation_reason": null,
+          "verification": {
+            "passed": true,
+            "attempts": 1,
+            "issues": []
+          },
+          "bidder_category": "large_enterprise",
+          "steps": 7,
+          "tool_calls": 4,
+          "prompt_versions": {
+            "classifier": "classifier/v1",
+            "compliance": "compliance/v1",
+            "verifier": "verifier/v1"
+          },
+          "usage": [
+            {
+              "step": "classifier",
+              "prompt_version": "classifier/v1",
+              "prompt_tokens": 559,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1511.6245840035845
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 1807,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1506.6962510027224
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 1999,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1518.3275430026697
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2144,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1509.477917003096
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2349,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1511.234917998081
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2655,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1512.1169179910794
+            },
+            {
+              "step": "verifier",
+              "prompt_version": "verifier/v1",
+              "prompt_tokens": 1911,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1509.735166997416
+            }
+          ],
+          "disclaimer": "Screening finding only. A tender committee decides; this system never rejects or qualifies a bid on its own authority."
+        }
+      }
+    },
+    {
+      "id": "B3",
+      "expected": "reject_with_cited_condition",
+      "actual": "escalate_to_human",
+      "expected_support": [
+        [
+          "TENDER-NITR-390",
+          "Clause 5"
+        ]
+      ],
+      "passed": false,
+      "result": {
+        "run_id": "0c5adf81-cf0b-4e26-ac19-38aa50f0fa82",
+        "status": "escalated",
+        "flags": [],
+        "finding": {
+          "run_id": "0c5adf81-cf0b-4e26-ac19-38aa50f0fa82",
+          "route": "escalate_to_human",
+          "summary": "The draft finding could not be verified against the retrieved passages; escalating rather than returning an unverified answer.",
+          "conditions": [],
+          "citations": [],
+          "committee_questions": [
+            "Please screen this bid manually."
+          ],
+          "escalation_reason": "verification_failed",
+          "verification": {
+            "passed": false,
+            "attempts": 2,
+            "issues": [
+              "EMD payment is recorded: add an EMD / bid security condition and cite tender Clause 1 (get_clause it if needed)"
+            ]
+          },
+          "bidder_category": "large_enterprise",
+          "steps": 7,
+          "tool_calls": 4,
+          "prompt_versions": {
+            "classifier": "classifier/v1",
+            "compliance": "compliance/v1"
+          },
+          "usage": [
+            {
+              "step": "classifier",
+              "prompt_version": "classifier/v1",
+              "prompt_tokens": 559,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1508.2382510008756
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 1807,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1512.4594170047203
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 1999,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1513.7222089979332
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2144,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1518.883917000494
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2349,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1514.1868339997018
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2655,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1521.281084002112
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2976,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1516.8234589946223
+            }
+          ],
+          "disclaimer": "Screening finding only. A tender committee decides; this system never rejects or qualifies a bid on its own authority."
+        }
+      }
+    },
+    {
+      "id": "B4",
+      "expected": "reject_with_cited_condition",
+      "actual": "escalate_to_human",
+      "expected_support": [
+        [
+          "TENDER-NITR-390",
+          "Clause 11"
+        ]
+      ],
+      "passed": false,
+      "result": {
+        "run_id": "f7fde9ba-fc3d-4200-a2c2-f5105166bd54",
+        "status": "escalated",
+        "flags": [],
+        "finding": {
+          "run_id": "f7fde9ba-fc3d-4200-a2c2-f5105166bd54",
+          "route": "escalate_to_human",
+          "summary": "The draft finding could not be verified against the retrieved passages; escalating rather than returning an unverified answer.",
+          "conditions": [],
+          "citations": [],
+          "committee_questions": [
+            "Please screen this bid manually."
+          ],
+          "escalation_reason": "verification_failed",
+          "verification": {
+            "passed": false,
+            "attempts": 2,
+            "issues": [
+              "EMD payment is recorded: add an EMD / bid security condition and cite tender Clause 1 (get_clause it if needed)"
+            ]
+          },
+          "bidder_category": "large_enterprise",
+          "steps": 7,
+          "tool_calls": 4,
+          "prompt_versions": {
+            "classifier": "classifier/v1",
+            "compliance": "compliance/v1"
+          },
+          "usage": [
+            {
+              "step": "classifier",
+              "prompt_version": "classifier/v1",
+              "prompt_tokens": 549,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1526.3239999912912
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 1797,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1510.1249589934014
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 1989,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1520.441042011953
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2134,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1508.9669169974513
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2340,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1511.7685010045534
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2645,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1514.492041998892
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2966,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1510.2466249954887
+            }
+          ],
+          "disclaimer": "Screening finding only. A tender committee decides; this system never rejects or qualifies a bid on its own authority."
+        }
+      }
+    },
+    {
+      "id": "B5",
+      "expected": "seek_clarification",
+      "actual": "escalate_to_human",
+      "expected_support": [
+        [
+          "TENDER-NITR-390",
+          "Clause 5"
+        ]
+      ],
+      "passed": false,
+      "result": {
+        "run_id": "97392600-a5c9-48d4-a926-4c907e8fbd6c",
+        "status": "escalated",
+        "flags": [],
+        "finding": {
+          "run_id": "97392600-a5c9-48d4-a926-4c907e8fbd6c",
+          "route": "escalate_to_human",
+          "summary": "The draft finding could not be verified against the retrieved passages; escalating rather than returning an unverified answer.",
+          "conditions": [],
+          "citations": [],
+          "committee_questions": [
+            "Please screen this bid manually."
+          ],
+          "escalation_reason": "verification_failed",
+          "verification": {
+            "passed": false,
+            "attempts": 2,
+            "issues": [
+              "EMD payment is recorded: add an EMD / bid security condition and cite tender Clause 1 (get_clause it if needed)"
+            ]
+          },
+          "bidder_category": "large_enterprise",
+          "steps": 7,
+          "tool_calls": 4,
+          "prompt_versions": {
+            "classifier": "classifier/v1",
+            "compliance": "compliance/v1"
+          },
+          "usage": [
+            {
+              "step": "classifier",
+              "prompt_version": "classifier/v1",
+              "prompt_tokens": 559,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1524.698334003915
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 1807,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1513.1673760042759
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 1999,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1516.8184590002056
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2144,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1522.7079589967616
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2350,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1515.2937509992626
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2655,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1519.6749180031475
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2986,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1508.6190430010902
+            }
+          ],
+          "disclaimer": "Screening finding only. A tender committee decides; this system never rejects or qualifies a bid on its own authority."
+        }
+      }
+    },
+    {
+      "id": "B6",
+      "expected": "escalate_to_human",
+      "actual": "escalate_to_human",
+      "expected_support": [
+        [
+          "TENDER-NITR-390",
+          "Clause 2"
+        ]
+      ],
+      "passed": true,
+      "result": {
+        "run_id": "e5c0b713-4a4e-4563-ac19-360ed7bcd9b9",
+        "status": "escalated",
+        "flags": [],
+        "finding": {
+          "run_id": "e5c0b713-4a4e-4563-ac19-360ed7bcd9b9",
+          "route": "escalate_to_human",
+          "summary": "The committee must confirm whether the bidder is a trader excluded from the MSE EMD benefit.",
+          "conditions": [
+            {
+              "condition": "turnover",
+              "clause_ref": "Clause 5",
+              "status": "met",
+              "evidence": "Bid turnover is Rs. 25,000,000.",
+              "citations": [
+                {
+                  "doc_id": "TENDER-NITR-390",
+                  "clause_ref": "Clause 5",
+                  "chunk_id": "TENDER-NITR-390:p2:clause5",
+                  "quote": "5. Bidder Turn Over Criteria: The minimum average annual financial turnover of the bidder during the three financial years, ending on 31st March 2026, should be Rs. 1,50,00,000 (On"
+                }
+              ]
+            },
+            {
+              "condition": "EMD / bid security",
+              "clause_ref": "Clause 2",
+              "status": "unclear",
+              "evidence": "MSE exemption requires the tender conditions.",
+              "citations": [
+                {
+                  "doc_id": "TENDER-NITR-390",
+                  "clause_ref": "Clause 2",
+                  "chunk_id": "TENDER-NITR-390:p2:clause2",
+                  "quote": "2. EMD Exemption: Micro and Small Enterprises (MSEs) as defined in MSE Procurement Policy issued by Department of Micro, Small and Medium Enterprises (MSME) for goods produced and "
+                }
+              ]
+            }
+          ],
+          "citations": [
+            {
+              "doc_id": "TENDER-NITR-390",
+              "clause_ref": "Clause 5",
+              "chunk_id": "TENDER-NITR-390:p2:clause5",
+              "quote": "5. Bidder Turn Over Criteria: The minimum average annual financial turnover of the bidder during the three financial years, ending on 31st March 2026, should be Rs. 1,50,00,000 (On"
+            },
+            {
+              "doc_id": "TENDER-NITR-390",
+              "clause_ref": "Clause 2",
+              "chunk_id": "TENDER-NITR-390:p2:clause2",
+              "quote": "2. EMD Exemption: Micro and Small Enterprises (MSEs) as defined in MSE Procurement Policy issued by Department of Micro, Small and Medium Enterprises (MSME) for goods produced and "
+            },
+            {
+              "doc_id": "MSME-CIRCULAR-2016-03-10",
+              "clause_ref": "Para 4",
+              "chunk_id": "MSME-CIRCULAR-2016-03-10:p2:para4",
+              "quote": "(4) In exercise of Para 16 of Public Procurement Policy for Micro and Small Enterprises Order 2012, it is clarified that all Central Ministries/Departments/ Central Public Sector U"
+            },
+            {
+              "doc_id": "GFR-2017-CH6",
+              "clause_ref": "Rule 173(i)",
+              "chunk_id": "GFR-2017-CH6:p11:rule173i",
+              "quote": "Rule 173 (i) The text of the bidding document should be selfcontained and comprehensive without any ambiguities. All essential information, which a bidder needs for sending respons"
+            }
+          ],
+          "committee_questions": [
+            "The committee must confirm whether the bidder is a trader excluded from the MSE EMD benefit."
+          ],
+          "escalation_reason": "tender_policy_conflict_or_undecidable",
+          "verification": {
+            "passed": true,
+            "attempts": 1,
+            "issues": []
+          },
+          "bidder_category": "mse",
+          "steps": 8,
+          "tool_calls": 5,
+          "prompt_versions": {
+            "classifier": "classifier/v1",
+            "compliance": "compliance/v1",
+            "verifier": "verifier/v1"
+          },
+          "usage": [
+            {
+              "step": "classifier",
+              "prompt_version": "classifier/v1",
+              "prompt_tokens": 568,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1510.0669590028701
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 1809,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1511.06604198867
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2001,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1509.8514179990161
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2146,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1503.3952499943553
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2371,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1509.2319169925759
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2557,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1511.6256250039442
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2880,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1517.977167997742
+            },
+            {
+              "step": "verifier",
+              "prompt_version": "verifier/v1",
+              "prompt_tokens": 1876,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1517.422417004127
+            }
+          ],
+          "disclaimer": "Screening finding only. A tender committee decides; this system never rejects or qualifies a bid on its own authority."
+        }
+      }
+    },
+    {
+      "id": "B7",
+      "expected": "escalate_to_human",
+      "actual": "escalate_to_human",
+      "expected_support": [
+        [
+          "TENDER-NITR-390",
+          "Clause 5"
+        ],
+        [
+          "GFR-2017-CH6",
+          "Rule 173(i)"
+        ]
+      ],
+      "passed": true,
+      "result": {
+        "run_id": "2de0521d-9bc5-4dae-8cab-ff74837f7fd5",
+        "status": "escalated",
+        "flags": [],
+        "finding": {
+          "run_id": "2de0521d-9bc5-4dae-8cab-ff74837f7fd5",
+          "route": "escalate_to_human",
+          "summary": "The tender and MSE relaxation provisions require committee review.",
+          "conditions": [
+            {
+              "condition": "turnover",
+              "clause_ref": "Clause 5",
+              "status": "unmet",
+              "evidence": "Bid turnover is Rs. 6,000,000.",
+              "citations": [
+                {
+                  "doc_id": "TENDER-NITR-390",
+                  "clause_ref": "Clause 5",
+                  "chunk_id": "TENDER-NITR-390:p2:clause5",
+                  "quote": "5. Bidder Turn Over Criteria: The minimum average annual financial turnover of the bidder during the three financial years, ending on 31st March 2026, should be Rs. 1,50,00,000 (On"
+                }
+              ]
+            },
+            {
+              "condition": "EMD / bid security",
+              "clause_ref": "Clause 2",
+              "status": "met",
+              "evidence": "MSE exemption requires the tender conditions.",
+              "citations": [
+                {
+                  "doc_id": "TENDER-NITR-390",
+                  "clause_ref": "Clause 2",
+                  "chunk_id": "TENDER-NITR-390:p2:clause2",
+                  "quote": "2. EMD Exemption: Micro and Small Enterprises (MSEs) as defined in MSE Procurement Policy issued by Department of Micro, Small and Medium Enterprises (MSME) for goods produced and "
+                }
+              ]
+            }
+          ],
+          "citations": [
+            {
+              "doc_id": "TENDER-NITR-390",
+              "clause_ref": "Clause 5",
+              "chunk_id": "TENDER-NITR-390:p2:clause5",
+              "quote": "5. Bidder Turn Over Criteria: The minimum average annual financial turnover of the bidder during the three financial years, ending on 31st March 2026, should be Rs. 1,50,00,000 (On"
+            },
+            {
+              "doc_id": "TENDER-NITR-390",
+              "clause_ref": "Clause 2",
+              "chunk_id": "TENDER-NITR-390:p2:clause2",
+              "quote": "2. EMD Exemption: Micro and Small Enterprises (MSEs) as defined in MSE Procurement Policy issued by Department of Micro, Small and Medium Enterprises (MSME) for goods produced and "
+            },
+            {
+              "doc_id": "MSME-CIRCULAR-2016-03-10",
+              "clause_ref": "Para 4",
+              "chunk_id": "MSME-CIRCULAR-2016-03-10:p2:para4",
+              "quote": "(4) In exercise of Para 16 of Public Procurement Policy for Micro and Small Enterprises Order 2012, it is clarified that all Central Ministries/Departments/ Central Public Sector U"
+            },
+            {
+              "doc_id": "GFR-2017-CH6",
+              "clause_ref": "Rule 173(i)",
+              "chunk_id": "GFR-2017-CH6:p11:rule173i",
+              "quote": "Rule 173 (i) The text of the bidding document should be selfcontained and comprehensive without any ambiguities. All essential information, which a bidder needs for sending respons"
+            }
+          ],
+          "committee_questions": [
+            "The tender and MSE relaxation provisions require committee review."
+          ],
+          "escalation_reason": "tender_policy_conflict_or_undecidable",
+          "verification": {
+            "passed": true,
+            "attempts": 1,
+            "issues": []
+          },
+          "bidder_category": "mse",
+          "steps": 8,
+          "tool_calls": 5,
+          "prompt_versions": {
+            "classifier": "classifier/v1",
+            "compliance": "compliance/v1",
+            "verifier": "verifier/v1"
+          },
+          "usage": [
+            {
+              "step": "classifier",
+              "prompt_version": "classifier/v1",
+              "prompt_tokens": 568,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1506.0625420010183
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 1809,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1510.9212929964997
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2001,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1510.1690840092488
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2146,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1514.8445429949788
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2371,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1515.1195000071311
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2557,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1512.9586669936543
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2880,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1511.800125008449
+            },
+            {
+              "step": "verifier",
+              "prompt_version": "verifier/v1",
+              "prompt_tokens": 1863,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1508.9525010116631
+            }
+          ],
+          "disclaimer": "Screening finding only. A tender committee decides; this system never rejects or qualifies a bid on its own authority."
+        }
+      }
+    },
+    {
+      "id": "B8",
+      "expected": "seek_clarification",
+      "actual": "seek_clarification",
+      "expected_support": [
+        [
+          "TENDER-NITR-390",
+          "Clause 3"
+        ]
+      ],
+      "passed": true,
+      "result": {
+        "run_id": "dd9e25e6-a758-4d8b-a65b-0d6e390d3f05",
+        "status": "done",
+        "flags": [
+          "startup claimed without DPIIT recognition number or certificate"
+        ],
+        "finding": {
+          "run_id": "dd9e25e6-a758-4d8b-a65b-0d6e390d3f05",
+          "route": "seek_clarification",
+          "summary": "The claimed startup EMD exemption cannot be confirmed without DPIIT evidence.",
+          "conditions": [
+            {
+              "condition": "EMD / bid security",
+              "clause_ref": "Clause 3",
+              "status": "unclear",
+              "evidence": "DPIIT recognition evidence is absent.",
+              "citations": [
+                {
+                  "doc_id": "TENDER-NITR-390",
+                  "clause_ref": "Clause 3",
+                  "chunk_id": "TENDER-NITR-390:p2:clause3",
+                  "quote": "3. Startup(s) as recognized by Department for Promotion of Industry and Internal Trade (DPIIT), Govt. of India, are exempted from paying EMD/Bid Security. However, they have to enc"
+                }
+              ]
+            }
+          ],
+          "citations": [
+            {
+              "doc_id": "TENDER-NITR-390",
+              "clause_ref": "Clause 3",
+              "chunk_id": "TENDER-NITR-390:p2:clause3",
+              "quote": "3. Startup(s) as recognized by Department for Promotion of Industry and Internal Trade (DPIIT), Govt. of India, are exempted from paying EMD/Bid Security. However, they have to enc"
+            }
+          ],
+          "committee_questions": [
+            "Provide the DPIIT recognition certificate."
+          ],
+          "escalation_reason": null,
+          "verification": {
+            "passed": true,
+            "attempts": 1,
+            "issues": []
+          },
+          "bidder_category": "startup",
+          "steps": 9,
+          "tool_calls": 6,
+          "prompt_versions": {
+            "classifier": "classifier/v1",
+            "compliance": "compliance/v1",
+            "verifier": "verifier/v1"
+          },
+          "usage": [
+            {
+              "step": "classifier",
+              "prompt_version": "classifier/v1",
+              "prompt_tokens": 575,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1518.2021249929676
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 1818,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1519.252708996646
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2010,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1510.497209004825
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2155,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1510.0234169949545
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2307,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1515.8040429960238
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2621,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1509.8402500007069
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2817,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1510.8720840071328
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 3141,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1524.7856260102708
+            },
+            {
+              "step": "verifier",
+              "prompt_version": "verifier/v1",
+              "prompt_tokens": 1727,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1516.993793004076
+            }
+          ],
+          "disclaimer": "Screening finding only. A tender committee decides; this system never rejects or qualifies a bid on its own authority."
+        }
+      }
+    },
+    {
+      "id": "B9",
+      "expected": "escalate_to_human",
+      "actual": "escalate_to_human",
+      "expected_support": [],
+      "passed": true,
+      "result": {
+        "run_id": "d914f5cf-c9a8-4709-a612-eb0d77250dc8",
+        "status": "escalated",
+        "flags": [],
+        "finding": {
+          "run_id": "d914f5cf-c9a8-4709-a612-eb0d77250dc8",
+          "route": "escalate_to_human",
+          "summary": "The corpus (tender, DoE/DPE orders, GFR Chapter 6, MSME circular) contains no provision on consortium bidders; no determination can be supported.",
+          "conditions": [],
+          "citations": [],
+          "committee_questions": [
+            "Which rules govern consortium bidders for this tender?"
+          ],
+          "escalation_reason": "corpus_cannot_answer",
+          "verification": null,
+          "bidder_category": "consortium",
+          "steps": 1,
+          "tool_calls": 0,
+          "prompt_versions": {
+            "classifier": "classifier/v1"
+          },
+          "usage": [
+            {
+              "step": "classifier",
+              "prompt_version": "classifier/v1",
+              "prompt_tokens": 558,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1515.2866669959622
+            }
+          ],
+          "disclaimer": "Screening finding only. A tender committee decides; this system never rejects or qualifies a bid on its own authority."
+        }
+      }
+    },
+    {
+      "id": "B10",
+      "expected": "escalate_to_human",
+      "actual": "escalate_to_human",
+      "expected_support": [],
+      "passed": true,
+      "result": {
+        "run_id": "d9927bab-cc9b-41af-8e42-74771f00548f",
+        "status": "escalated",
+        "flags": [],
+        "finding": {
+          "run_id": "d9927bab-cc9b-41af-8e42-74771f00548f",
+          "route": "escalate_to_human",
+          "summary": "The corpus (tender, DoE/DPE orders, GFR Chapter 6, MSME circular) contains no provision on foreign bidders; no determination can be supported.",
+          "conditions": [],
+          "citations": [],
+          "committee_questions": [
+            "Which rules govern foreign bidders for this tender?"
+          ],
+          "escalation_reason": "corpus_cannot_answer",
+          "verification": null,
+          "bidder_category": "foreign",
+          "steps": 1,
+          "tool_calls": 0,
+          "prompt_versions": {
+            "classifier": "classifier/v1"
+          },
+          "usage": [
+            {
+              "step": "classifier",
+              "prompt_version": "classifier/v1",
+              "prompt_tokens": 557,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1521.3116259983508
+            }
+          ],
+          "disclaimer": "Screening finding only. A tender committee decides; this system never rejects or qualifies a bid on its own authority."
+        }
+      }
+    },
+    {
+      "id": "B11",
+      "expected": "quarantine",
+      "actual": "quarantine",
+      "expected_support": [],
+      "passed": true,
+      "result": {
+        "status": "quarantined",
+        "quarantine_id": "9ce3a3f6-d51d-4fdb-b0d3-76c3344d675b",
+        "errors": [
+          {
+            "field": "remarks",
+            "message": "contains a prompt-injection pattern; request was blocked before an agent run",
+            "type": "prompt_injection"
+          }
+        ]
+      }
+    },
+    {
+      "id": "B12",
+      "expected": "quarantine",
+      "actual": "quarantine",
+      "expected_support": [],
+      "passed": true,
+      "result": {
+        "status": "quarantined",
+        "quarantine_id": "3376ff0b-a743-4175-8150-644c1271e284",
+        "errors": [
+          {
+            "field": "bidder_category_claimed",
+            "message": "Input should be 'large_enterprise', 'mse', 'startup', 'consortium', 'foreign' or 'unknown'",
+            "type": "literal_error"
+          },
+          {
+            "field": "avg_annual_turnover_inr",
+            "message": "Input should be greater than or equal to 0",
+            "type": "greater_than_equal"
+          }
+        ]
+      }
+    },
+    {
+      "id": "B13",
+      "expected": "pass_to_technical_evaluation",
+      "actual": "pass_to_technical_evaluation",
+      "expected_support": [
+        [
+          "TENDER-NITR-390",
+          "Clause 5"
+        ],
+        [
+          "TENDER-NITR-390",
+          "Clause 6"
+        ]
+      ],
+      "passed": true,
+      "result": {
+        "run_id": "6220b7b0-0d1b-4c04-b62b-6fafd05479c4",
+        "status": "done",
+        "flags": [],
+        "finding": {
+          "run_id": "6220b7b0-0d1b-4c04-b62b-6fafd05479c4",
+          "route": "pass_to_technical_evaluation",
+          "summary": "The supplied summary meets the screened mandatory conditions and should proceed to technical evaluation.",
+          "conditions": [
+            {
+              "condition": "turnover",
+              "clause_ref": "Clause 5",
+              "status": "met",
+              "evidence": "Bid turnover is Rs. 25,000,000, meeting the tender minimum.",
+              "citations": [
+                {
+                  "doc_id": "TENDER-NITR-390",
+                  "clause_ref": "Clause 5",
+                  "chunk_id": "TENDER-NITR-390:p2:clause5",
+                  "quote": "5. Bidder Turn Over Criteria: The minimum average annual financial turnover of the bidder during the three financial years, ending on 31st March 2026, should be Rs. 1,50,00,000 (On"
+                }
+              ]
+            },
+            {
+              "condition": "experience",
+              "clause_ref": "Clause 6",
+              "status": "met",
+              "evidence": "The bid reports similar-work experience.",
+              "citations": [
+                {
+                  "doc_id": "TENDER-NITR-390",
+                  "clause_ref": "Clause 6",
+                  "chunk_id": "TENDER-NITR-390:p2:clause6",
+                  "quote": "6. Bidder Experience Criteria: The bidder must have supplied same or similar category products during last 5 financial years ending on 31 March 2026. Relevant documents in support "
+                }
+              ]
+            },
+            {
+              "condition": "EMD / bid security",
+              "clause_ref": "Clause 1",
+              "status": "met",
+              "evidence": "The bid records EMD payment.",
+              "citations": [
+                {
+                  "doc_id": "TENDER-NITR-390",
+                  "clause_ref": "Clause 1",
+                  "chunk_id": "TENDER-NITR-390:p2:clause1",
+                  "quote": "1. Tender Fee & Earnest Money Deposit (EMD): A non-refundable Tender Fee of Rs. 1500/- (Rupees One Thousand Five hundred only) and refundable EMD of Rs. 1,00,000/- (Rupees One Lakh"
+                }
+              ]
+            },
+            {
+              "condition": "mandatory documents",
+              "clause_ref": "Clause 11",
+              "status": "met",
+              "evidence": "The required documents are present in the bid summary.",
+              "citations": [
+                {
+                  "doc_id": "TENDER-NITR-390",
+                  "clause_ref": "Clause 11",
+                  "chunk_id": "TENDER-NITR-390:p3:clause11",
+                  "quote": "11. Documents to be submitted: (i) Cover \u2013 I: Technical Part (all documents must be self-attested) a) Copy of Valid Legal Status (Proprietorship / Partnership / Public Limited / Pr"
+                }
+              ]
+            }
+          ],
+          "citations": [
+            {
+              "doc_id": "TENDER-NITR-390",
+              "clause_ref": "Clause 5",
+              "chunk_id": "TENDER-NITR-390:p2:clause5",
+              "quote": "5. Bidder Turn Over Criteria: The minimum average annual financial turnover of the bidder during the three financial years, ending on 31st March 2026, should be Rs. 1,50,00,000 (On"
+            },
+            {
+              "doc_id": "TENDER-NITR-390",
+              "clause_ref": "Clause 6",
+              "chunk_id": "TENDER-NITR-390:p2:clause6",
+              "quote": "6. Bidder Experience Criteria: The bidder must have supplied same or similar category products during last 5 financial years ending on 31 March 2026. Relevant documents in support "
+            },
+            {
+              "doc_id": "TENDER-NITR-390",
+              "clause_ref": "Clause 1",
+              "chunk_id": "TENDER-NITR-390:p2:clause1",
+              "quote": "1. Tender Fee & Earnest Money Deposit (EMD): A non-refundable Tender Fee of Rs. 1500/- (Rupees One Thousand Five hundred only) and refundable EMD of Rs. 1,00,000/- (Rupees One Lakh"
+            },
+            {
+              "doc_id": "TENDER-NITR-390",
+              "clause_ref": "Clause 11",
+              "chunk_id": "TENDER-NITR-390:p3:clause11",
+              "quote": "11. Documents to be submitted: (i) Cover \u2013 I: Technical Part (all documents must be self-attested) a) Copy of Valid Legal Status (Proprietorship / Partnership / Public Limited / Pr"
+            }
+          ],
+          "committee_questions": [],
+          "escalation_reason": null,
+          "verification": {
+            "passed": true,
+            "attempts": 1,
+            "issues": []
+          },
+          "bidder_category": "large_enterprise",
+          "steps": 7,
+          "tool_calls": 4,
+          "prompt_versions": {
+            "classifier": "classifier/v1",
+            "compliance": "compliance/v1",
+            "verifier": "verifier/v1"
+          },
+          "usage": [
+            {
+              "step": "classifier",
+              "prompt_version": "classifier/v1",
+              "prompt_tokens": 559,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1518.947874996229
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 1807,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1518.6357499915175
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 1999,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1513.4262499923352
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2144,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1521.4145420031855
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2349,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1509.82187599584
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2655,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1508.384417000343
+            },
+            {
+              "step": "verifier",
+              "prompt_version": "verifier/v1",
+              "prompt_tokens": 1911,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1508.5219589964254
+            }
+          ],
+          "disclaimer": "Screening finding only. A tender committee decides; this system never rejects or qualifies a bid on its own authority."
+        }
+      }
+    },
+    {
+      "id": "B14",
+      "expected": "reject_with_cited_condition",
+      "actual": "escalate_to_human",
+      "expected_support": [
+        [
+          "TENDER-NITR-390",
+          "Clause 5"
+        ]
+      ],
+      "passed": false,
+      "result": {
+        "run_id": "d92d6a28-dec3-41e2-8ff6-a197f27a0018",
+        "status": "escalated",
+        "flags": [],
+        "finding": {
+          "run_id": "d92d6a28-dec3-41e2-8ff6-a197f27a0018",
+          "route": "escalate_to_human",
+          "summary": "The draft finding could not be verified against the retrieved passages; escalating rather than returning an unverified answer.",
+          "conditions": [],
+          "citations": [],
+          "committee_questions": [
+            "Please screen this bid manually."
+          ],
+          "escalation_reason": "verification_failed",
+          "verification": {
+            "passed": false,
+            "attempts": 2,
+            "issues": [
+              "EMD payment is recorded: add an EMD / bid security condition and cite tender Clause 1 (get_clause it if needed)"
+            ]
+          },
+          "bidder_category": "large_enterprise",
+          "steps": 7,
+          "tool_calls": 4,
+          "prompt_versions": {
+            "classifier": "classifier/v1",
+            "compliance": "compliance/v1"
+          },
+          "usage": [
+            {
+              "step": "classifier",
+              "prompt_version": "classifier/v1",
+              "prompt_tokens": 559,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1513.748500001384
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 1807,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1509.6535420016153
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 1999,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1522.9939179989742
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2144,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1521.057001009467
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2349,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1513.1450830085669
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2655,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1509.9795420101145
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2976,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1510.987000001478
+            }
+          ],
+          "disclaimer": "Screening finding only. A tender committee decides; this system never rejects or qualifies a bid on its own authority."
+        }
+      }
+    },
+    {
+      "id": "B15",
+      "expected": "reject_with_cited_condition",
+      "actual": "escalate_to_human",
+      "expected_support": [
+        [
+          "TENDER-NITR-390",
+          "Clause 11"
+        ]
+      ],
+      "passed": false,
+      "result": {
+        "run_id": "50905338-eb34-4129-bb7e-d1145ce99d32",
+        "status": "escalated",
+        "flags": [],
+        "finding": {
+          "run_id": "50905338-eb34-4129-bb7e-d1145ce99d32",
+          "route": "escalate_to_human",
+          "summary": "The draft finding could not be verified against the retrieved passages; escalating rather than returning an unverified answer.",
+          "conditions": [],
+          "citations": [],
+          "committee_questions": [
+            "Please screen this bid manually."
+          ],
+          "escalation_reason": "verification_failed",
+          "verification": {
+            "passed": false,
+            "attempts": 2,
+            "issues": [
+              "EMD payment is recorded: add an EMD / bid security condition and cite tender Clause 1 (get_clause it if needed)"
+            ]
+          },
+          "bidder_category": "large_enterprise",
+          "steps": 7,
+          "tool_calls": 4,
+          "prompt_versions": {
+            "classifier": "classifier/v1",
+            "compliance": "compliance/v1"
+          },
+          "usage": [
+            {
+              "step": "classifier",
+              "prompt_version": "classifier/v1",
+              "prompt_tokens": 549,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1513.0702500027837
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 1797,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1510.2037090109661
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 1989,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1521.994042006554
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2134,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1511.6887089970987
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2340,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1515.6328760058386
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2645,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1507.8398339974228
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2966,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1509.7693340067053
+            }
+          ],
+          "disclaimer": "Screening finding only. A tender committee decides; this system never rejects or qualifies a bid on its own authority."
+        }
+      }
+    },
+    {
+      "id": "B16",
+      "expected": "seek_clarification",
+      "actual": "escalate_to_human",
+      "expected_support": [
+        [
+          "TENDER-NITR-390",
+          "Clause 5"
+        ]
+      ],
+      "passed": false,
+      "result": {
+        "run_id": "ec94d9c5-5ab8-4b25-bb07-cd2bc6d2d538",
+        "status": "escalated",
+        "flags": [],
+        "finding": {
+          "run_id": "ec94d9c5-5ab8-4b25-bb07-cd2bc6d2d538",
+          "route": "escalate_to_human",
+          "summary": "The draft finding could not be verified against the retrieved passages; escalating rather than returning an unverified answer.",
+          "conditions": [],
+          "citations": [],
+          "committee_questions": [
+            "Please screen this bid manually."
+          ],
+          "escalation_reason": "verification_failed",
+          "verification": {
+            "passed": false,
+            "attempts": 2,
+            "issues": [
+              "EMD payment is recorded: add an EMD / bid security condition and cite tender Clause 1 (get_clause it if needed)"
+            ]
+          },
+          "bidder_category": "large_enterprise",
+          "steps": 7,
+          "tool_calls": 4,
+          "prompt_versions": {
+            "classifier": "classifier/v1",
+            "compliance": "compliance/v1"
+          },
+          "usage": [
+            {
+              "step": "classifier",
+              "prompt_version": "classifier/v1",
+              "prompt_tokens": 559,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1521.614042998408
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 1807,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1517.5707090093056
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 1999,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1511.8158760014921
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2144,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1514.579208989744
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2350,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1510.9055840002839
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2655,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1515.1196679944405
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2986,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1513.1084169988753
+            }
+          ],
+          "disclaimer": "Screening finding only. A tender committee decides; this system never rejects or qualifies a bid on its own authority."
+        }
+      }
+    },
+    {
+      "id": "B17",
+      "expected": "escalate_to_human",
+      "actual": "escalate_to_human",
+      "expected_support": [
+        [
+          "TENDER-NITR-390",
+          "Clause 2"
+        ]
+      ],
+      "passed": true,
+      "result": {
+        "run_id": "81d0459b-4f6a-4f8c-95fc-acfb5ed3bc46",
+        "status": "escalated",
+        "flags": [],
+        "finding": {
+          "run_id": "81d0459b-4f6a-4f8c-95fc-acfb5ed3bc46",
+          "route": "escalate_to_human",
+          "summary": "The committee must confirm whether the bidder is a trader excluded from the MSE EMD benefit.",
+          "conditions": [
+            {
+              "condition": "turnover",
+              "clause_ref": "Clause 5",
+              "status": "met",
+              "evidence": "Bid turnover is Rs. 25,000,000.",
+              "citations": [
+                {
+                  "doc_id": "TENDER-NITR-390",
+                  "clause_ref": "Clause 5",
+                  "chunk_id": "TENDER-NITR-390:p2:clause5",
+                  "quote": "5. Bidder Turn Over Criteria: The minimum average annual financial turnover of the bidder during the three financial years, ending on 31st March 2026, should be Rs. 1,50,00,000 (On"
+                }
+              ]
+            },
+            {
+              "condition": "EMD / bid security",
+              "clause_ref": "Clause 2",
+              "status": "unclear",
+              "evidence": "MSE exemption requires the tender conditions.",
+              "citations": [
+                {
+                  "doc_id": "TENDER-NITR-390",
+                  "clause_ref": "Clause 2",
+                  "chunk_id": "TENDER-NITR-390:p2:clause2",
+                  "quote": "2. EMD Exemption: Micro and Small Enterprises (MSEs) as defined in MSE Procurement Policy issued by Department of Micro, Small and Medium Enterprises (MSME) for goods produced and "
+                }
+              ]
+            }
+          ],
+          "citations": [
+            {
+              "doc_id": "TENDER-NITR-390",
+              "clause_ref": "Clause 5",
+              "chunk_id": "TENDER-NITR-390:p2:clause5",
+              "quote": "5. Bidder Turn Over Criteria: The minimum average annual financial turnover of the bidder during the three financial years, ending on 31st March 2026, should be Rs. 1,50,00,000 (On"
+            },
+            {
+              "doc_id": "TENDER-NITR-390",
+              "clause_ref": "Clause 2",
+              "chunk_id": "TENDER-NITR-390:p2:clause2",
+              "quote": "2. EMD Exemption: Micro and Small Enterprises (MSEs) as defined in MSE Procurement Policy issued by Department of Micro, Small and Medium Enterprises (MSME) for goods produced and "
+            },
+            {
+              "doc_id": "MSME-CIRCULAR-2016-03-10",
+              "clause_ref": "Para 4",
+              "chunk_id": "MSME-CIRCULAR-2016-03-10:p2:para4",
+              "quote": "(4) In exercise of Para 16 of Public Procurement Policy for Micro and Small Enterprises Order 2012, it is clarified that all Central Ministries/Departments/ Central Public Sector U"
+            },
+            {
+              "doc_id": "GFR-2017-CH6",
+              "clause_ref": "Rule 173(i)",
+              "chunk_id": "GFR-2017-CH6:p11:rule173i",
+              "quote": "Rule 173 (i) The text of the bidding document should be selfcontained and comprehensive without any ambiguities. All essential information, which a bidder needs for sending respons"
+            }
+          ],
+          "committee_questions": [
+            "The committee must confirm whether the bidder is a trader excluded from the MSE EMD benefit."
+          ],
+          "escalation_reason": "tender_policy_conflict_or_undecidable",
+          "verification": {
+            "passed": true,
+            "attempts": 1,
+            "issues": []
+          },
+          "bidder_category": "mse",
+          "steps": 8,
+          "tool_calls": 5,
+          "prompt_versions": {
+            "classifier": "classifier/v1",
+            "compliance": "compliance/v1",
+            "verifier": "verifier/v1"
+          },
+          "usage": [
+            {
+              "step": "classifier",
+              "prompt_version": "classifier/v1",
+              "prompt_tokens": 568,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1524.02929199161
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 1809,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1507.2787509998307
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2001,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1518.2592919882154
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2146,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1510.1557919988409
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2371,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1511.0785840079188
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2557,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1519.958292003139
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2880,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1521.3231250090757
+            },
+            {
+              "step": "verifier",
+              "prompt_version": "verifier/v1",
+              "prompt_tokens": 1876,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1509.6347920043627
+            }
+          ],
+          "disclaimer": "Screening finding only. A tender committee decides; this system never rejects or qualifies a bid on its own authority."
+        }
+      }
+    },
+    {
+      "id": "B18",
+      "expected": "escalate_to_human",
+      "actual": "escalate_to_human",
+      "expected_support": [
+        [
+          "TENDER-NITR-390",
+          "Clause 5"
+        ],
+        [
+          "GFR-2017-CH6",
+          "Rule 173(i)"
+        ]
+      ],
+      "passed": true,
+      "result": {
+        "run_id": "44902ca0-e389-49c9-96f7-4b6b2cc6d21a",
+        "status": "escalated",
+        "flags": [],
+        "finding": {
+          "run_id": "44902ca0-e389-49c9-96f7-4b6b2cc6d21a",
+          "route": "escalate_to_human",
+          "summary": "The tender and MSE relaxation provisions require committee review.",
+          "conditions": [
+            {
+              "condition": "turnover",
+              "clause_ref": "Clause 5",
+              "status": "unmet",
+              "evidence": "Bid turnover is Rs. 6,000,000.",
+              "citations": [
+                {
+                  "doc_id": "TENDER-NITR-390",
+                  "clause_ref": "Clause 5",
+                  "chunk_id": "TENDER-NITR-390:p2:clause5",
+                  "quote": "5. Bidder Turn Over Criteria: The minimum average annual financial turnover of the bidder during the three financial years, ending on 31st March 2026, should be Rs. 1,50,00,000 (On"
+                }
+              ]
+            },
+            {
+              "condition": "EMD / bid security",
+              "clause_ref": "Clause 2",
+              "status": "met",
+              "evidence": "MSE exemption requires the tender conditions.",
+              "citations": [
+                {
+                  "doc_id": "TENDER-NITR-390",
+                  "clause_ref": "Clause 2",
+                  "chunk_id": "TENDER-NITR-390:p2:clause2",
+                  "quote": "2. EMD Exemption: Micro and Small Enterprises (MSEs) as defined in MSE Procurement Policy issued by Department of Micro, Small and Medium Enterprises (MSME) for goods produced and "
+                }
+              ]
+            }
+          ],
+          "citations": [
+            {
+              "doc_id": "TENDER-NITR-390",
+              "clause_ref": "Clause 5",
+              "chunk_id": "TENDER-NITR-390:p2:clause5",
+              "quote": "5. Bidder Turn Over Criteria: The minimum average annual financial turnover of the bidder during the three financial years, ending on 31st March 2026, should be Rs. 1,50,00,000 (On"
+            },
+            {
+              "doc_id": "TENDER-NITR-390",
+              "clause_ref": "Clause 2",
+              "chunk_id": "TENDER-NITR-390:p2:clause2",
+              "quote": "2. EMD Exemption: Micro and Small Enterprises (MSEs) as defined in MSE Procurement Policy issued by Department of Micro, Small and Medium Enterprises (MSME) for goods produced and "
+            },
+            {
+              "doc_id": "MSME-CIRCULAR-2016-03-10",
+              "clause_ref": "Para 4",
+              "chunk_id": "MSME-CIRCULAR-2016-03-10:p2:para4",
+              "quote": "(4) In exercise of Para 16 of Public Procurement Policy for Micro and Small Enterprises Order 2012, it is clarified that all Central Ministries/Departments/ Central Public Sector U"
+            },
+            {
+              "doc_id": "GFR-2017-CH6",
+              "clause_ref": "Rule 173(i)",
+              "chunk_id": "GFR-2017-CH6:p11:rule173i",
+              "quote": "Rule 173 (i) The text of the bidding document should be selfcontained and comprehensive without any ambiguities. All essential information, which a bidder needs for sending respons"
+            }
+          ],
+          "committee_questions": [
+            "The tender and MSE relaxation provisions require committee review."
+          ],
+          "escalation_reason": "tender_policy_conflict_or_undecidable",
+          "verification": {
+            "passed": true,
+            "attempts": 1,
+            "issues": []
+          },
+          "bidder_category": "mse",
+          "steps": 8,
+          "tool_calls": 5,
+          "prompt_versions": {
+            "classifier": "classifier/v1",
+            "compliance": "compliance/v1",
+            "verifier": "verifier/v1"
+          },
+          "usage": [
+            {
+              "step": "classifier",
+              "prompt_version": "classifier/v1",
+              "prompt_tokens": 568,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1514.591418002965
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 1809,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1516.098667998449
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2001,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1528.8783339929068
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2146,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1518.111625991878
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2371,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1514.8817090084776
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2557,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1522.432708996348
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2880,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1514.7223340027267
+            },
+            {
+              "step": "verifier",
+              "prompt_version": "verifier/v1",
+              "prompt_tokens": 1863,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1511.0866260074545
+            }
+          ],
+          "disclaimer": "Screening finding only. A tender committee decides; this system never rejects or qualifies a bid on its own authority."
+        }
+      }
+    },
+    {
+      "id": "B19",
+      "expected": "seek_clarification",
+      "actual": "seek_clarification",
+      "expected_support": [
+        [
+          "TENDER-NITR-390",
+          "Clause 3"
+        ]
+      ],
+      "passed": true,
+      "result": {
+        "run_id": "baeed7c2-0d5e-4c2f-8995-447709e51a45",
+        "status": "done",
+        "flags": [
+          "startup claimed without DPIIT recognition number or certificate"
+        ],
+        "finding": {
+          "run_id": "baeed7c2-0d5e-4c2f-8995-447709e51a45",
+          "route": "seek_clarification",
+          "summary": "The claimed startup EMD exemption cannot be confirmed without DPIIT evidence.",
+          "conditions": [
+            {
+              "condition": "EMD / bid security",
+              "clause_ref": "Clause 3",
+              "status": "unclear",
+              "evidence": "DPIIT recognition evidence is absent.",
+              "citations": [
+                {
+                  "doc_id": "TENDER-NITR-390",
+                  "clause_ref": "Clause 3",
+                  "chunk_id": "TENDER-NITR-390:p2:clause3",
+                  "quote": "3. Startup(s) as recognized by Department for Promotion of Industry and Internal Trade (DPIIT), Govt. of India, are exempted from paying EMD/Bid Security. However, they have to enc"
+                }
+              ]
+            }
+          ],
+          "citations": [
+            {
+              "doc_id": "TENDER-NITR-390",
+              "clause_ref": "Clause 3",
+              "chunk_id": "TENDER-NITR-390:p2:clause3",
+              "quote": "3. Startup(s) as recognized by Department for Promotion of Industry and Internal Trade (DPIIT), Govt. of India, are exempted from paying EMD/Bid Security. However, they have to enc"
+            }
+          ],
+          "committee_questions": [
+            "Provide the DPIIT recognition certificate."
+          ],
+          "escalation_reason": null,
+          "verification": {
+            "passed": true,
+            "attempts": 1,
+            "issues": []
+          },
+          "bidder_category": "startup",
+          "steps": 9,
+          "tool_calls": 6,
+          "prompt_versions": {
+            "classifier": "classifier/v1",
+            "compliance": "compliance/v1",
+            "verifier": "verifier/v1"
+          },
+          "usage": [
+            {
+              "step": "classifier",
+              "prompt_version": "classifier/v1",
+              "prompt_tokens": 575,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1524.8093340051128
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 1818,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1511.9284169923048
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2010,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1508.8251260021934
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2155,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1505.5844589951448
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2307,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1517.5347499898635
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2621,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1507.7872090041637
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2817,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1513.1543339957716
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 3141,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1510.5185839929618
+            },
+            {
+              "step": "verifier",
+              "prompt_version": "verifier/v1",
+              "prompt_tokens": 1727,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1526.5032509923913
+            }
+          ],
+          "disclaimer": "Screening finding only. A tender committee decides; this system never rejects or qualifies a bid on its own authority."
+        }
+      }
+    },
+    {
+      "id": "B20",
+      "expected": "escalate_to_human",
+      "actual": "escalate_to_human",
+      "expected_support": [
+        [
+          "TENDER-NITR-390",
+          "Clause 5"
+        ],
+        [
+          "TENDER-NITR-390",
+          "Clause 6"
+        ],
+        [
+          "GFR-2017-CH6",
+          "Rule 173(i)"
+        ]
+      ],
+      "passed": true,
+      "result": {
+        "run_id": "08b88f9b-3830-4ae1-88ff-e30a1d2d2e23",
+        "status": "escalated",
+        "flags": [],
+        "finding": {
+          "run_id": "08b88f9b-3830-4ae1-88ff-e30a1d2d2e23",
+          "route": "escalate_to_human",
+          "summary": "Tender turnover and experience conditions conflict with startup-relaxation policy provisions; committee review is required.",
+          "conditions": [
+            {
+              "condition": "turnover",
+              "clause_ref": "Clause 5",
+              "status": "unmet",
+              "evidence": "Bid turnover is Rs. 4,000,000, below Rs. 1,50,00,000.",
+              "citations": [
+                {
+                  "doc_id": "TENDER-NITR-390",
+                  "clause_ref": "Clause 5",
+                  "chunk_id": "TENDER-NITR-390:p2:clause5",
+                  "quote": "5. Bidder Turn Over Criteria: The minimum average annual financial turnover of the bidder during the three financial years, ending on 31st March 2026, should be Rs. 1,50,00,000 (On"
+                }
+              ]
+            },
+            {
+              "condition": "experience",
+              "clause_ref": "Clause 6",
+              "status": "unmet",
+              "evidence": "The bid reports no similar-work supply experience.",
+              "citations": [
+                {
+                  "doc_id": "TENDER-NITR-390",
+                  "clause_ref": "Clause 6",
+                  "chunk_id": "TENDER-NITR-390:p2:clause6",
+                  "quote": "6. Bidder Experience Criteria: The bidder must have supplied same or similar category products during last 5 financial years ending on 31 March 2026. Relevant documents in support "
+                }
+              ]
+            },
+            {
+              "condition": "EMD / bid security",
+              "clause_ref": "Clause 3",
+              "status": "met",
+              "evidence": "DPIIT evidence and declaration are supplied.",
+              "citations": [
+                {
+                  "doc_id": "TENDER-NITR-390",
+                  "clause_ref": "Clause 3",
+                  "chunk_id": "TENDER-NITR-390:p2:clause3",
+                  "quote": "3. Startup(s) as recognized by Department for Promotion of Industry and Internal Trade (DPIIT), Govt. of India, are exempted from paying EMD/Bid Security. However, they have to enc"
+                }
+              ]
+            }
+          ],
+          "citations": [
+            {
+              "doc_id": "TENDER-NITR-390",
+              "clause_ref": "Clause 5",
+              "chunk_id": "TENDER-NITR-390:p2:clause5",
+              "quote": "5. Bidder Turn Over Criteria: The minimum average annual financial turnover of the bidder during the three financial years, ending on 31st March 2026, should be Rs. 1,50,00,000 (On"
+            },
+            {
+              "doc_id": "TENDER-NITR-390",
+              "clause_ref": "Clause 6",
+              "chunk_id": "TENDER-NITR-390:p2:clause6",
+              "quote": "6. Bidder Experience Criteria: The bidder must have supplied same or similar category products during last 5 financial years ending on 31 March 2026. Relevant documents in support "
+            },
+            {
+              "doc_id": "TENDER-NITR-390",
+              "clause_ref": "Clause 3",
+              "chunk_id": "TENDER-NITR-390:p2:clause3",
+              "quote": "3. Startup(s) as recognized by Department for Promotion of Industry and Internal Trade (DPIIT), Govt. of India, are exempted from paying EMD/Bid Security. However, they have to enc"
+            },
+            {
+              "doc_id": "DOE-OM-2016-07-25",
+              "clause_ref": "Para 3",
+              "chunk_id": "DOE-OM-2016-07-25:p4:para3",
+              "quote": "3. As per Rule 160(i)(a) of GFR, 2005, there Is already a provision that the bidding document should contain criteria for eligibility and qualification to be met by the bidders suc"
+            },
+            {
+              "doc_id": "DOE-OM-2016-09-20",
+              "clause_ref": "Para 2",
+              "chunk_id": "DOE-OM-2016-09-20:p3:para2",
+              "quote": "2. A doubt has arisen if it makes optional for Central Ministries/ Departments to relax condition of prior experience and prior turnover in public procurement to Startups. In this "
+            },
+            {
+              "doc_id": "GFR-2017-CH6",
+              "clause_ref": "Rule 173(i)",
+              "chunk_id": "GFR-2017-CH6:p11:rule173i",
+              "quote": "Rule 173 (i) The text of the bidding document should be selfcontained and comprehensive without any ambiguities. All essential information, which a bidder needs for sending respons"
+            }
+          ],
+          "committee_questions": [
+            "Does Rule 173(i) apply where this tender has no suitable provision?",
+            "Does the bidder meet the quality and technical specifications?"
+          ],
+          "escalation_reason": "tender_policy_conflict_or_undecidable",
+          "verification": {
+            "passed": true,
+            "attempts": 1,
+            "issues": []
+          },
+          "bidder_category": "startup",
+          "steps": 9,
+          "tool_calls": 6,
+          "prompt_versions": {
+            "classifier": "classifier/v1",
+            "compliance": "compliance/v1",
+            "verifier": "verifier/v1"
+          },
+          "usage": [
+            {
+              "step": "classifier",
+              "prompt_version": "classifier/v1",
+              "prompt_tokens": 567,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1522.9161250026664
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 1811,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1512.027250995743
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2002,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1514.088833995629
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2147,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1510.1908750075381
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2299,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1509.9718340061372
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2613,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1522.785749999457
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 2810,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1507.457792002242
+            },
+            {
+              "step": "compliance",
+              "prompt_version": "compliance/v1",
+              "prompt_tokens": 3133,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1519.1510419972474
+            },
+            {
+              "step": "verifier",
+              "prompt_version": "verifier/v1",
+              "prompt_tokens": 2310,
+              "completion_tokens": 150,
+              "cost": 0.0,
+              "latency_ms": 1509.4599169970024
+            }
+          ],
+          "disclaimer": "Screening finding only. A tender committee decides; this system never rejects or qualifies a bid on its own authority."
+        }
+      }
+    }
+  ]
+}

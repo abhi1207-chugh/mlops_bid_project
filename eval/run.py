@@ -17,6 +17,33 @@ POLL_SECONDS = float(os.getenv("EVAL_POLL_SECONDS", "1"))
 TIMEOUT_SECONDS = float(os.getenv("EVAL_TIMEOUT_SECONDS", "120"))
 
 
+def quality_metrics(results: list[dict]) -> dict:
+    """Deterministic equivalent of a groundedness evaluator.
+
+    Groundedness is an independently verified finding; context relevance means a
+    citation contains one of the scenario's expected corpus passages; faithfulness
+    requires every condition with evidence to carry a resolved citation; and the
+    hallucination rate is the share of evaluated findings failing faithfulness.
+    Invalid inputs are not included because they must never invoke retrieval/LLM.
+    """
+    eligible = [item for item in results if item["expected"] != "quarantine"]
+    grounded = relevant = faithful = 0
+    for item in eligible:
+        finding = item["result"].get("finding") or {}
+        verified = bool((finding.get("verification") or {}).get("passed"))
+        citations = {(c.get("doc_id"), c.get("clause_ref")) for c in finding.get("citations", [])}
+        expected = {tuple(pair) for pair in item.get("expected_support", [])}
+        condition_cited = all(not c.get("evidence") or c.get("citations") for c in finding.get("conditions", []))
+        grounded += verified
+        relevant += bool(expected & citations)
+        faithful += bool(verified and condition_cited)
+    total = len(eligible)
+    return {"evaluated_findings": total, "groundedness": grounded / total if total else 0,
+            "context_relevance": relevant / total if total else 0,
+            "faithfulness": faithful / total if total else 0,
+            "hallucination_rate": 1 - (faithful / total) if total else 0}
+
+
 def main() -> None:
     scenarios = twenty(json.loads(Path("/app/eval/bidders.json").read_text()))
     results: list[dict] = []
@@ -39,16 +66,14 @@ def main() -> None:
                     result = {"status": "timed_out", "run_id": run_id}
                 actual = result.get("finding", {}).get("route", result["status"])
             results.append({"id": scenario["id"], "expected": scenario["expected_route"], "actual": actual,
+                            "expected_support": scenario.get("expected_support", []),
                             "passed": actual == scenario["expected_route"], "result": result})
     passed = sum(item["passed"] for item in results)
-    verified = [bool(x["result"].get("finding", {}).get("verification", {}).get("passed")) for x in results]
-    cited = [bool(x["result"].get("finding", {}).get("citations")) for x in results]
-    grounded = sum(verified) / len(results)
     report = {"prompt_version": os.getenv("PROMPT_VERSION", "v1"), "total": len(results), "passed": passed,
-              "route_accuracy": passed / len(results), "metrics": {"groundedness": grounded,
-              "context_relevance": sum(cited) / len(results), "faithfulness": grounded,
-              "hallucination_rate": 1 - grounded}, "results": results}
+              "route_accuracy": passed / len(results), "metrics": quality_metrics(results), "results": results}
     print(json.dumps(report, indent=2))
+    if output := os.getenv("EVAL_OUTPUT_PATH"):
+        Path(output).write_text(json.dumps(report, indent=2))
     if passed != len(results):
         raise SystemExit(1)
 
