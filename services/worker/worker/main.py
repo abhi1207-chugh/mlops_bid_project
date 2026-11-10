@@ -22,6 +22,8 @@ AGENT_STEPS = Histogram("screening_agent_steps", "LLM calls per completed run")
 TOOL_CALLS = Histogram("screening_tool_calls", "Tool calls per completed run")
 VERIFICATIONS = Counter("screening_verifications_total", "Verification outcomes", ["outcome"])
 AGENT_CALLS = Counter("screening_agent_calls_total", "Successful LLM calls", ["agent"])
+AGENT_TASKS = Counter("screening_agent_tasks_total", "Agent task outcomes", ["agent", "outcome"])
+STEP_DURATION = Histogram("screening_agent_step_seconds", "Latency for each completed LLM step", ["agent"])
 RETRIES = Counter("screening_verification_retries_total", "Verifier-driven compliance retries")
 RUN_ERRORS = Counter("screening_run_errors_total", "Runs escalated because of an operational error", ["reason"])
 CACHE = Counter("screening_retrieval_cache_total", "Retrieval cache outcomes", ["outcome"])
@@ -54,6 +56,7 @@ def process(store: RunStore, llm, run_id: str) -> None:
             RUN_ERRORS.labels(finding.escalation_reason).inc()
         for usage in finding.usage:
             AGENT_CALLS.labels(usage.step).inc()
+            STEP_DURATION.labels(usage.step).observe(usage.latency_ms / 1000)
             LLM_TOKENS.labels(usage.step, "prompt").inc(usage.prompt_tokens)
             LLM_TOKENS.labels(usage.step, "completion").inc(usage.completion_tokens)
             LLM_COST.labels(usage.step).inc(usage.cost)
@@ -63,6 +66,18 @@ def process(store: RunStore, llm, run_id: str) -> None:
             CACHE.labels("hit").inc(cache_hits)
         if cache_misses:
             CACHE.labels("miss").inc(cache_misses)
+        # A task success is deliberately stricter than a transport-successful LLM call.
+        # It lets the dashboard expose the rate at which each independent role completed
+        # its responsibility without needing to infer it from routes.
+        classifier_ok = any(item.get("kind") == "classified" and item.get("category") in {
+            "large_enterprise", "mse", "startup"
+        } for item in trace) and finding.escalation_reason != "bidder_category_unclear"
+        compliance_ok = bool(any(u.step == "compliance" for u in finding.usage)) and finding.escalation_reason not in {
+            "run_incomplete", "llm_unavailable", "run_error", "verification_failed"
+        }
+        verifier_ok = bool(finding.verification and finding.verification.passed)
+        for agent, ok in (("classifier", classifier_ok), ("compliance", compliance_ok), ("verifier", verifier_ok)):
+            AGENT_TASKS.labels(agent, "success" if ok else "failure").inc()
         log(logger, "run_finished", route=finding.route, steps=finding.steps, tool_calls=finding.tool_calls)
     finally:
         correlation_id.reset(token)

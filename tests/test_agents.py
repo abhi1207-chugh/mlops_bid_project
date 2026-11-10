@@ -1,5 +1,6 @@
 """Agent flow with a scripted LLM and an in-memory corpus (no model download, no network)."""
 import json
+import time
 
 from common.llm import LLMError, LLMResult
 from worker.agents import parse_json, run_screening
@@ -142,3 +143,16 @@ def test_autonomous_determination_wording_is_never_returned():
     f = run(Scripted([SEARCH, unsafe, unsafe], category="large_enterprise"), bid)
     assert f.route == "escalate_to_human"
     assert any("safety check" in issue for issue in f.verification.issues)
+
+
+def test_tool_timeout_is_returned_to_the_agent_and_never_becomes_a_confident_finding(monkeypatch):
+    monkeypatch.setenv("TOOL_TIMEOUT_SECONDS", "0.01")
+
+    class SlowTools(FakeTools):
+        def call(self, tool, args):
+            time.sleep(0.05)
+            return super().call(tool, args)
+
+    finding, trace = run_screening("r1", BID, [], Scripted([SEARCH] * 50), SlowTools(BID))
+    assert finding.escalation_reason == "run_incomplete"
+    assert any(event["kind"] == "tool_failure" and event["error"] == "TimeoutError" for event in trace)

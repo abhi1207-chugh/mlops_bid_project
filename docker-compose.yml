@@ -29,6 +29,9 @@ services:
       context: .
       dockerfile: services/api/Dockerfile
     env_file: .env
+    environment:
+      # A benchmark may raise this through Compose without weakening the normal .env default.
+      RATE_LIMIT_PER_MINUTE: ${RATE_LIMIT_PER_MINUTE:-10}
     ports:
       - "${API_PORT:-8000}:8000"
     volumes:
@@ -54,6 +57,7 @@ services:
       PROMPT_VERSION: ${PROMPT_VERSION:-v1}
     volumes:
       - appdata:/data
+      - ./artifacts:/artifacts
     depends_on:
       redis:
         condition: service_healthy

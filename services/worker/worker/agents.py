@@ -10,6 +10,7 @@ import json
 import logging
 import re
 import time
+from concurrent.futures import ThreadPoolExecutor, TimeoutError as FutureTimeout
 from typing import Any, TypedDict
 
 from langgraph.graph import END, StateGraph
@@ -99,6 +100,26 @@ class RunContext:
         self.trace.append({"t": time.time(), "kind": kind, **data})
         log(logger, kind, **data)
 
+    def call_tool(self, tool: str, args: dict) -> Any:
+        """Run one tool within its own deadline.
+
+        Corpus tools are intentionally synchronous so their returned passages can be recorded
+        atomically in the current run.  A one-shot executor gives the orchestration layer a
+        hard waiting limit nevertheless: a stuck cache, vector search, or future network-backed
+        tool becomes an observable tool error and the agent can retry or safely escalate.
+        """
+        executor = ThreadPoolExecutor(max_workers=1, thread_name_prefix="corpus-tool")
+        future = executor.submit(self.tools.call, tool, args)
+        try:
+            return future.result(timeout=get_settings().tool_timeout_seconds)
+        except FutureTimeout as exc:
+            future.cancel()
+            raise TimeoutError(f"{tool} exceeded TOOL_TIMEOUT_SECONDS") from exc
+        finally:
+            # Do not hold up the agent loop for a timed-out lower-level call.  Redis already
+            # has socket timeouts; CPU retrieval has no external side effect.
+            executor.shutdown(wait=False, cancel_futures=True)
+
 
 def escalation(ctx: RunContext, reason: str, summary: str, questions: list[str] | None = None,
                category: str | None = None, verification: Verification | None = None) -> Finding:
@@ -151,9 +172,10 @@ def build_graph(ctx: RunContext):
             if out.get("action") == "tool":
                 tool, args = str(out.get("tool")), out.get("args") or {}
                 try:
-                    result = ctx.tools.call(tool, args if isinstance(args, dict) else {})
+                    result = ctx.call_tool(tool, args if isinstance(args, dict) else {})
                 except Exception as exc:  # unknown tool / bad args: tell the model, keep the bound
                     result = {"error": f"{type(exc).__name__}: {exc}"}
+                    ctx.event("tool_failure", tool=tool, error=type(exc).__name__)
                 ctx.event("tool_call", tool=tool, args=args,
                           returned=[r.get("chunk_id") for r in result] if isinstance(result, list) else None)
                 transcript.append(f"ASSISTANT: {json.dumps(out)}\nTOOL_RESULT: {json.dumps(result)}")

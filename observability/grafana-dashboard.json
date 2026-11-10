@@ -4,13 +4,16 @@
   "schemaVersion": 39,
   "version": 1,
   "panels": [
-    {"type": "timeseries", "title": "Run duration p95", "targets": [{"expr": "histogram_quantile(0.95, sum(rate(screening_run_seconds_bucket[5m])) by (le))"}]},
+    {"type": "timeseries", "title": "Run duration p50 / p95", "targets": [{"expr": "histogram_quantile(0.50, sum(rate(screening_run_seconds_bucket[5m])) by (le))", "legendFormat": "p50"}, {"expr": "histogram_quantile(0.95, sum(rate(screening_run_seconds_bucket[5m])) by (le))", "legendFormat": "p95"}]},
     {"type": "timeseries", "title": "Finished runs by route", "targets": [{"expr": "sum(rate(screening_runs_total[5m])) by (route)"}]},
     {"type": "timeseries", "title": "Agent steps", "targets": [{"expr": "histogram_quantile(0.95, sum(rate(screening_agent_steps_bucket[5m])) by (le))"}]},
     {"type": "timeseries", "title": "Verification outcomes", "targets": [{"expr": "sum(rate(screening_verifications_total[5m])) by (outcome)"}]},
     {"type": "timeseries", "title": "Throughput and error rate", "targets": [{"expr": "sum(rate(screening_runs_total[5m]))"}, {"expr": "sum(rate(screening_run_errors_total[5m])) / clamp_min(sum(rate(screening_runs_total[5m])), 1)"}]},
     {"type": "timeseries", "title": "Agent calls and retries", "targets": [{"expr": "sum(rate(screening_agent_calls_total[5m])) by (agent)"}, {"expr": "sum(rate(screening_verification_retries_total[5m]))"}]},
+    {"type": "timeseries", "title": "Agent task success rate", "targets": [{"expr": "sum(rate(screening_agent_tasks_total{outcome=\"success\"}[5m])) by (agent) / clamp_min(sum(rate(screening_agent_tasks_total[5m])) by (agent), 1)"}]},
+    {"type": "timeseries", "title": "Agent step latency p50 / p95", "targets": [{"expr": "histogram_quantile(0.50, sum(rate(screening_agent_step_seconds_bucket[5m])) by (le, agent))", "legendFormat": "{{agent}} p50"}, {"expr": "histogram_quantile(0.95, sum(rate(screening_agent_step_seconds_bucket[5m])) by (le, agent))", "legendFormat": "{{agent}} p95"}]},
     {"type": "timeseries", "title": "Retrieval cache hit ratio", "targets": [{"expr": "sum(rate(screening_retrieval_cache_total{outcome=\"hit\"}[5m])) / clamp_min(sum(rate(screening_retrieval_cache_total[5m])), 1)"}]},
-    {"type": "stat", "title": "Service availability", "targets": [{"expr": "avg(up{job=~\"api|worker\"})"}]}
+    {"type": "stat", "title": "Service availability", "targets": [{"expr": "avg(up{job=~\"api|worker\"})"}]},
+    {"type": "timeseries", "title": "Worker container uptime", "targets": [{"expr": "time() - process_start_time_seconds{job=\"worker\"}", "legendFormat": "{{instance}}"}]}
   ]
 }
