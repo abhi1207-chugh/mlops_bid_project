@@ -66,3 +66,9 @@ class RunRecord(BaseModel):
     flags: list[str] = Field(default_factory=list)
     finding: Finding | None = None
     trace: list[dict] = Field(default_factory=list)
+
+
+class FeedbackRequest(BaseModel):
+    """Committee feedback on a screening finding; never changes the original finding."""
+    satisfactory: bool
+    reason: str = Field(min_length=1, max_length=2000)

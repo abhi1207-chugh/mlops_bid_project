@@ -27,6 +27,13 @@ def test_b11_prompt_injection_is_blocked_before_an_agent_run():
     assert errors[0]["type"] == "prompt_injection"
 
 
+def test_toxic_remarks_are_blocked_before_an_agent_run():
+    bid = dict(BIDDERS["B2"]["bid"], remarks="I will kill the committee")
+    model, errors = validate_bid(bid)
+    assert model is None
+    assert errors[0]["type"] == "unsafe_content"
+
+
 def test_cross_field_rules():
     bid = dict(BIDDERS["B2"]["bid"], emd_exemption_claimed=True)
     assert validate_bid(bid)[0] is None  # large enterprise cannot claim exemption

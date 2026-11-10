@@ -15,5 +15,6 @@ COPY prompts /app/prompts
 COPY corpus /app/corpus
 COPY contracts /app/contracts
 COPY eval /app/eval
+COPY load /app/load
 COPY tests /app/tests
 CMD ["python", "-m", "worker.main"]

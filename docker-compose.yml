@@ -47,6 +47,11 @@ services:
       context: .
       dockerfile: services/worker/Dockerfile
     env_file: .env
+    environment:
+      # Explicit values allow Phase 3's local-stub measurements to override .env.
+      LLM_PROVIDER: ${LLM_PROVIDER:-stub}
+      LLM_BASE_URL: ${LLM_BASE_URL:-http://stub-llm:8080}
+      PROMPT_VERSION: ${PROMPT_VERSION:-v1}
     volumes:
       - appdata:/data
     depends_on:
@@ -72,6 +77,9 @@ services:
     environment:
       GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
       GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:?set GRAFANA_ADMIN_PASSWORD in .env}
+    volumes:
+      - ./observability/grafana-dashboard.json:/var/lib/grafana/dashboards/bid-compliance.json:ro
+      - ./observability/grafana-provisioning.yaml:/etc/grafana/provisioning/dashboards/bid-compliance.yaml:ro
     ports:
       - "${GRAFANA_PORT:-3000}:3000"
     depends_on:

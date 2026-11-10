@@ -24,6 +24,9 @@ class Settings:
     rate_limit_per_minute: int = field(default_factory=lambda: int(_f("RATE_LIMIT_PER_MINUTE", "10")))
     circuit_breaker_failure_threshold: int = field(default_factory=lambda: int(_f("CIRCUIT_BREAKER_FAILURE_THRESHOLD", "5")))
     circuit_breaker_reset_seconds: float = field(default_factory=lambda: float(_f("CIRCUIT_BREAKER_RESET_SECONDS", "30")))
+    retrieval_cache_seconds: int = field(default_factory=lambda: int(_f("RETRIEVAL_CACHE_SECONDS", "3600")))
+    auto_score_sample_rate: float = field(default_factory=lambda: float(_f("AUTO_SCORE_SAMPLE_RATE", "0.20")))
+    prompt_version: str = field(default_factory=lambda: _f("PROMPT_VERSION", "v1"))
     queue_key: str = "runs:queue"
     processing_key: str = "runs:processing"
 

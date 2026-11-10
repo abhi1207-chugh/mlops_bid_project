@@ -45,9 +45,20 @@ class Passage:
 
 
 def _passages(prompt: str) -> list[Passage]:
+    # Prefer actual tool-result JSON. The prompt template itself contains illustrative
+    # citation placeholders which must never be mistaken for retrieved evidence.
+    out = []
+    for raw in re.findall(r"TOOL_RESULT:\s*(\[.*?\])(?:\nASSISTANT:|\nSYSTEM:|$)", prompt, re.S):
+        try:
+            for item in json.loads(raw):
+                if {"chunk_id", "doc_id", "clause_ref", "text"} <= item.keys():
+                    out.append(Passage(item["chunk_id"], item["doc_id"], item["clause_ref"], item["text"]))
+        except (ValueError, TypeError):
+            continue
+    if out:
+        return out
     pattern = re.compile(r'"chunk_id":\s*"([^"\\]+)".*?"doc_id":\s*"([^"\\]+)".*?'
                          r'"clause_ref":\s*"([^"\\]+)".*?"text":\s*"((?:[^"\\]|\\.)*)"', re.S)
-    out = []
     for cid, did, ref, text in pattern.findall(prompt):
         try:
             out.append(Passage(cid, did, ref, json.loads(f'"{text}"')))

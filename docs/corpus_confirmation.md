@@ -3,11 +3,9 @@
 Project: Public Procurement Bid Compliance Screening Service (Mini Project 06)
 Machine-readable list: `corpus/manifest.json`
 
-## 0. Open risk: the tender is live
+## 0. Tender status: closed
 
-The brief says: "Use a published, closed tender only. Do not screen bids against a live tender."
-The chosen tender (NIT Rourkela, enquiry NITR/PW/CIC-LTE/2026/390) was issued 05-Nov-2026. Bids close 26-Nov-2026 10:00 and open 27-Nov-2026 10:00. It is **live until then**.
-Decision taken: use it anyway. Before Evaluation 1, confirm with the instructor, or switch to a closed tender. Fallback: `corpus/archive_unused/tender_cwc_mahanadi_2020_581435.pdf` (closed 2020; portal summary page only). The rest of this document needs only the tender-specific numbers in section 2 and 4 changed if the tender changes.
+The brief requires a published, closed tender. The updated NIT Rourkela tender (enquiry NITR/PW/CIC-LTE/2026/390) was issued 05-Nov-2026, closed 08-Nov-2026 at 10:00, and opened 09-Nov-2026 at 10:00. The project corpus uses the updated source file `tender_nitr_lte_dates_updated_261110_140125.pdf`; its eligibility clauses are unchanged. No real bidder data is used.
 No real bidder data is used. All bidders are invented test inputs.
 
 ## 1. Corpus

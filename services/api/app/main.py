@@ -5,6 +5,7 @@ import json
 import logging
 import os
 import time
+import hashlib
 
 import redis
 from fastapi import FastAPI, HTTPException, Request
@@ -14,9 +15,12 @@ from prometheus_client import Counter, Gauge, make_asgi_app
 from common.config import get_settings
 from common.contract import validate_bid
 from common.logging import correlation_id, log, setup_logging
+from common.models import FeedbackRequest
 from common.runstore import RunStore, quarantine
+from common.tracing import inject_context, setup_tracing, span
 
 setup_logging()
+setup_tracing("bid-compliance-api")
 logger = logging.getLogger("api")
 app = FastAPI(title="Bid Compliance Screening", version="0.1.0")
 app.mount("/metrics", make_asgi_app())
@@ -24,6 +28,8 @@ app.mount("/metrics", make_asgi_app())
 SUBMITTED = Counter("screenings_submitted_total", "Accepted screening requests")
 QUARANTINED = Counter("screenings_quarantined_total", "Requests rejected by validation")
 RATE_LIMITED = Counter("screenings_rate_limited_total", "Requests rejected by client rate limiting")
+FEEDBACK = Counter("screening_feedback_total", "Committee feedback", ["satisfactory"])
+AUTO_SCORES = Counter("screening_auto_scores_total", "Sampled deterministic auto-scores", ["outcome"])
 INDEX_AGE = Gauge("index_age_seconds", "Seconds since the corpus index was built")
 STATIC = os.path.join(os.path.dirname(__file__), "static")
 
@@ -110,8 +116,11 @@ async def submit_screening(request: Request) -> JSONResponse:
             RATE_LIMITED.inc()
             return JSONResponse({"detail": "rate limit exceeded; retry in the next minute"}, status_code=429,
                                 headers={"Retry-After": "60"})
-        rec = store().create(model.model_dump(), model.flags())
-        store().enqueue(rec.run_id)
+        with span("api.submit_screening", tender_id=model.tender_id):
+            rec = store().create(model.model_dump(), model.flags())
+            with span("queue.enqueue", run_id=rec.run_id):
+                store().set_trace_context(rec.run_id, inject_context())
+                store().enqueue(rec.run_id)
     except redis.RedisError:
         raise HTTPException(status_code=503, detail="queue unavailable; request not accepted")
     SUBMITTED.inc()
@@ -142,7 +151,22 @@ def get_trace(run_id: str) -> dict:
             "usage": [u.model_dump() for u in rec.finding.usage] if rec.finding else []}
 
 
-@app.post("/v1/screenings/{run_id}/feedback")
-def feedback(run_id: str) -> dict:
-    # Phase 3 (L6): persist satisfactory yes/no with a reason.
-    raise HTTPException(status_code=501, detail="not implemented")
+@app.post("/v1/screenings/{run_id}/feedback", status_code=201)
+def feedback(run_id: str, body: FeedbackRequest) -> dict:
+    """Record committee feedback and sample a transparent, non-LLM quality score."""
+    rec = store().get(run_id)
+    if rec is None:
+        raise HTTPException(status_code=404, detail="unknown run_id")
+    sampled = int(hashlib.sha256(run_id.encode()).hexdigest()[:8], 16) / 0xFFFFFFFF < get_settings().auto_score_sample_rate
+    auto_score = None
+    if sampled:
+        verified = bool(rec.finding and rec.finding.verification and rec.finding.verification.passed)
+        cited = bool(rec.finding and rec.finding.citations)
+        auto_score = {"method": "deterministic_verified_citation_check", "grounded": verified and cited,
+                      "verification_passed": verified, "has_resolved_citations": cited}
+        AUTO_SCORES.labels("grounded" if auto_score["grounded"] else "needs_review").inc()
+    entry = {"received_at": time.time(), "satisfactory": body.satisfactory, "reason": body.reason,
+             "auto_score": auto_score}
+    store().save_feedback(run_id, entry)
+    FEEDBACK.labels(str(body.satisfactory).lower()).inc()
+    return {"run_id": run_id, "recorded": True, "sampled_for_auto_score": sampled, "auto_score": auto_score}

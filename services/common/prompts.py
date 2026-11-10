@@ -7,7 +7,9 @@ import re
 from common.config import get_settings
 
 
-def load_prompt(name: str, version: str = "v1", **variables: str) -> tuple[str, str]:
+def load_prompt(name: str, version: str | None = None, **variables: str) -> tuple[str, str]:
+    if version is None:
+        version = get_settings().prompt_version
     path = os.path.join(get_settings().prompts_dir, name, f"{version}.md")
     with open(path, encoding="utf-8") as fh:
         text = fh.read()

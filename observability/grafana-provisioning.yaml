@@ -1,0 +1,10 @@
+apiVersion: 1
+providers:
+  - name: bid-compliance
+    orgId: 1
+    folder: Bid Compliance
+    type: file
+    disableDeletion: true
+    updateIntervalSeconds: 10
+    options:
+      path: /var/lib/grafana/dashboards

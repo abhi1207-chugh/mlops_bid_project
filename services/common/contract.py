@@ -9,6 +9,7 @@ import re
 from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, ValidationError, model_validator
+from common.safety import unsafe_input_reason
 
 _INJECTION_PATTERNS = (
     r"\b(?:ignore|disregard|override)\b.{0,80}\b(?:previous|prior|system|above)\b.{0,80}\b(?:instruction|prompt|rule)s?\b",
@@ -81,6 +82,8 @@ def validate_bid(payload: Any) -> tuple[BidSummary | None, list[dict]]:
         remarks = model.remarks or ""
         if any(re.search(pattern, remarks, re.IGNORECASE | re.DOTALL) for pattern in _INJECTION_PATTERNS):
             return None, [{"field": "remarks", "message": "contains a prompt-injection pattern; request was blocked before an agent run", "type": "prompt_injection"}]
+        if reason := unsafe_input_reason(remarks):
+            return None, [{"field": "remarks", "message": f"{reason}; request was blocked before an agent run", "type": "unsafe_content"}]
         return model, []
     except ValidationError as exc:
         errors = []

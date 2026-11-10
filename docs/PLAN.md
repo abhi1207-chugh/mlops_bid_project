@@ -16,25 +16,25 @@ Order matters. Finish each phase so that `docker compose up` still works before 
 - [x] Demo items 1, 2, 5, 10 working (verified 08-Nov-2026: Compose path and B1/B2/B9 API runs; B1 used the configured provider and returned a verified escalation with Clauses 3, 5, 6, both DoE OMs and GFR Rule 173(i))
 
 ## Phase 2: Robustness and safety
-- [ ] Timeouts, retry with exponential backoff, circuit breaker, fallback path (A5): demo item 8
-- [ ] Prompt injection defence, output filter (cannot issue a determination), toxicity check (L4): demo item 7
-- [ ] Verification failure -> re-search -> escalate path demonstrable (A3): demo item 6
-- [ ] Structured logs, correlation ID, OpenTelemetry to Jaeger, run reconstruction by `run_id` (D5, F8): demo item 3
-- [ ] Rate limiting per client (D7)
+- [x] Timeouts, retry with exponential backoff, circuit breaker, fallback path (A5): demo item 8
+- [x] Prompt injection defence, output filter (cannot issue a determination), toxicity check (L4): demo item 7
+- [x] Verification failure -> re-search -> escalate path demonstrable (A3): demo item 6
+- [x] Structured logs, correlation ID, OpenTelemetry to Jaeger, run reconstruction by `run_id` (D5, F8): demo item 3
+- [x] Rate limiting per client (D7)
 
 ## Phase 3: Measurement
-- [ ] Per-step token and cost tracking (L5)
-- [ ] Prometheus metrics + Grafana dashboard: p50/p95, error rate, throughput, availability, per-agent success rate, steps/tool calls per run, retry rate (A6, D5)
-- [ ] Declare the p95 SLO **before** measuring (D6); Locust against stub; `--scale worker=3` comparison (A7): demo item 9
-- [ ] Caching and measured effect (D7)
-- [ ] Evaluation set, at least 20 scenarios, including 4.1 (L3); metrics: groundedness, context relevance, faithfulness, hallucination rate; one deliberate change and before/after
-- [ ] Two prompt variants compared on the same set (L2)
-- [ ] Feedback endpoint + sampled auto-scoring (L6)
+- [x] Per-step token and cost tracking (L5)
+- [x] Prometheus metrics + Grafana dashboard: p50/p95, error rate, throughput, availability, per-agent success rate, steps/tool calls per run, retry rate (A6, D5)
+- [x] Declare the p95 SLO **before** measuring (D6); Locust against stub; `--scale worker=3` comparison (A7): demo item 9
+- [x] Caching and measured effect (D7)
+- [x] Evaluation set, at least 20 scenarios, including 4.1 (L3); metrics: groundedness, context relevance, faithfulness, hallucination rate; one deliberate change and before/after
+- [x] Two prompt variants compared on the same set (L2)
+- [x] Feedback endpoint + sampled auto-scoring (L6)
 
 ## Phase 4: Documentation
-- [ ] README that a stranger can follow to run the system
-- [ ] Runbook for the two most likely failures + incident log with at least one real entry (D8). Log real failures **as they happen during development**.
-- [ ] Report: scope, agent design (topology, tools, verification, loop limits), architecture diagram with deployment boundaries, rejected alternatives, before/after eval, SLO/results/bottleneck/cost per 100 runs, what did not work
+- [x] README that a stranger can follow to run the system
+- [x] Runbook for the two most likely failures + incident log with at least one real entry (D8). Log real failures **as they happen during development**.
+- [x] Report: scope, agent design (topology, tools, verification, loop limits), architecture diagram with deployment boundaries, rejected alternatives, before/after eval, SLO/results/bottleneck/cost per 100 runs, what did not work
 
 ## Demo checklist (10 items)
 1 compose up from clean clone | 2 valid request with citations | 3 one run traced end to end | 4 malformed request quarantined, no agent started | 5 corpus cannot answer -> escalation | 6 verifier catches unsupported answer | 7 injection attempt blocked | 8 circuit breaker opens, degradation | 9 Locust results + scale effect | 10 the 4.1 case

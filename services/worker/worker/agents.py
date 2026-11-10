@@ -19,6 +19,8 @@ from common.llm import LLMClient, LLMError
 from common.logging import log
 from common.models import ConditionFinding, Finding, UsageRecord, Verification
 from common.prompts import load_prompt
+from common.safety import unsafe_output_reason
+from common.tracing import span
 from worker.retrieval import CorpusTools
 from worker.verifier import resolve_citations
 
@@ -82,7 +84,8 @@ class RunContext:
         """One LLM call. Returns parsed JSON or None on unparseable output."""
         prompt, version = load_prompt(name, **vars_)
         self.prompt_versions[name] = version
-        res = self.llm.generate(prompt, prompt_version=version, step=name, run_id=self.run_id)
+        with span(f"agent.{name}", run_id=self.run_id, prompt_version=version):
+            res = self.llm.generate(prompt, prompt_version=version, step=name, run_id=self.run_id)
         self.usage.append(UsageRecord(step=name, prompt_version=version, prompt_tokens=res.prompt_tokens,
                                       completion_tokens=res.completion_tokens, cost=res.cost, latency_ms=res.latency_ms))
         self.steps += 1
@@ -166,6 +169,13 @@ def build_graph(ctx: RunContext):
         route = d.get("route")
         if route not in ROUTES:
             issues.append(f"invalid route {route!r}")
+        visible_text = " ".join([
+            str(d.get("summary", "")),
+            *(str(c.get("evidence", "")) for c in d.get("conditions", []) or []),
+            *(str(q) for q in d.get("committee_questions", []) or []),
+        ])
+        if reason := unsafe_output_reason(visible_text):
+            issues.append(f"final wording safety check failed: {reason}")
         top, iss = resolve_citations(d.get("citations", []), ctx.tools.retrieved)
         issues += iss
         conditions: list[ConditionFinding] = []
@@ -265,4 +275,5 @@ def run_screening(run_id: str, bid: dict, flags: list[str], llm: LLMClient, tool
     except Exception as exc:  # noqa: BLE001 - last line of defence for rule 1
         ctx.event("run_error", error=f"{type(exc).__name__}: {exc}")
         finding = escalation(ctx, "run_error", "The screening run failed unexpectedly; escalating.", ["Please screen this bid manually."])
+    ctx.trace.extend({"kind": f"cache_{event}"} for event in getattr(tools, "cache_events", []))
     return finding, ctx.trace

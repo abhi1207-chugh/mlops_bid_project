@@ -124,3 +124,21 @@ def test_paid_emd_requires_clause_1_citation():
     f = run(Scripted([SEARCH, good, good], category="large_enterprise"), bid)
     assert f.escalation_reason == "verification_failed"
     assert any("Clause 1" in issue for issue in f.verification.issues)
+
+
+def test_verifier_research_retry_can_recover_to_a_verified_finding():
+    bad = dict(GOOD, citations=[{"chunk_id": "T:p2:clause5", "quote": "invented quote"}])
+    good = json.loads(json.dumps(GOOD))
+    bid = {"bidder_category_claimed": "large_enterprise"}
+    f = run(Scripted([SEARCH, bad, SEARCH, good], category="large_enterprise"), bid)
+    assert f.verification.passed and f.verification.attempts == 2
+    assert f.tool_calls == 2
+
+
+def test_autonomous_determination_wording_is_never_returned():
+    unsafe = json.loads(json.dumps(GOOD))
+    unsafe["summary"] = "The system has approved this bid."
+    bid = {"bidder_category_claimed": "large_enterprise"}
+    f = run(Scripted([SEARCH, unsafe, unsafe], category="large_enterprise"), bid)
+    assert f.route == "escalate_to_human"
+    assert any("safety check" in issue for issue in f.verification.issues)

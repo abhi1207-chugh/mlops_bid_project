@@ -30,6 +30,13 @@ class RunStore:
     def enqueue(self, run_id: str) -> None:
         self.r.lpush(self.s.queue_key, run_id)
 
+    def set_trace_context(self, run_id: str, carrier: dict[str, str]) -> None:
+        self.r.set(f"trace:{run_id}", json.dumps(carrier), ex=86400)
+
+    def get_trace_context(self, run_id: str) -> dict[str, str] | None:
+        raw = self.r.get(f"trace:{run_id}")
+        return json.loads(raw) if raw else None
+
     def save(self, rec: RunRecord) -> None:
         rec.updated_at = time.time()
         self.r.set(self._key(rec.run_id), rec.model_dump_json())
@@ -48,6 +55,15 @@ class RunStore:
                 fh.write(rec.model_dump_json(indent=2))
         except OSError:
             pass
+
+    def save_feedback(self, run_id: str, feedback: dict) -> None:
+        """Append-only feedback, deliberately kept separate from the screening record."""
+        key = f"feedback:{run_id}"
+        self.r.rpush(key, json.dumps(feedback))
+        self.r.expire(key, 60 * 60 * 24 * 90)
+
+    def feedback(self, run_id: str) -> list[dict]:
+        return [json.loads(item) for item in self.r.lrange(f"feedback:{run_id}", 0, -1)]
 
     def recover_processing(self, stale_after: int = 120) -> int:
         """Requeue expired processing entries; only reclaim records whose heartbeat is stale."""
