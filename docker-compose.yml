@@ -58,6 +58,9 @@ services:
       LLM_PROVIDER: ${LLM_PROVIDER:-stub}
       LLM_BASE_URL: ${LLM_BASE_URL:-http://stub-llm:8080}
       PROMPT_VERSION: ${PROMPT_VERSION:-v1}
+      CLASSIFIER_PROMPT_VERSION: ${CLASSIFIER_PROMPT_VERSION:-v1}
+      COMPLIANCE_PROMPT_VERSION: ${COMPLIANCE_PROMPT_VERSION:-v1}
+      VERIFIER_PROMPT_VERSION: ${VERIFIER_PROMPT_VERSION:-v1}
       # The embedding model is baked into the worker image; runtime screening must
       # not depend on an external model hub or an API token.
       HF_HUB_OFFLINE: "1"
