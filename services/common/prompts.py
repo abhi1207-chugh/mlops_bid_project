@@ -1,4 +1,8 @@
-"""Versioned prompt loader. Prompts live in prompts/<name>/vN.md; the version used is recorded with every response."""
+"""Versioned prompt loader.
+
+A per-agent override allows a controlled prompt experiment: for example, change
+only COMPLIANCE_PROMPT_VERSION while keeping classifier and verifier fixed.
+"""
 from __future__ import annotations
 
 import os
@@ -9,7 +13,10 @@ from common.config import get_settings
 
 def load_prompt(name: str, version: str | None = None, **variables: str) -> tuple[str, str]:
     if version is None:
-        version = get_settings().prompt_version
+        override = f"{name.upper()}_PROMPT_VERSION"
+        version = os.getenv(override) or get_settings().prompt_version
+    if not re.fullmatch(r"v[0-9]+", version):
+        raise ValueError(f"invalid prompt version {version!r} for {name}")
     path = os.path.join(get_settings().prompts_dir, name, f"{version}.md")
     with open(path, encoding="utf-8") as fh:
         text = fh.read()
