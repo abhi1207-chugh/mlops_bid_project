@@ -5,7 +5,6 @@ import json
 import os
 from pathlib import Path
 
-METRICS = ("groundedness", "context_relevance", "faithfulness", "hallucination_rate")
 DIRECTIONS = {
     "route_accuracy": "higher",
     "groundedness": "higher",
@@ -94,7 +93,7 @@ def main() -> None:
     if output := os.getenv("EVAL_COMPARISON_PATH"):
         target = Path(output)
         target.parent.mkdir(parents=True, exist_ok=True)
-        target.write_text(rendered + "\\n")
+        target.write_text(rendered + "\n")
 
 
 if __name__ == "__main__":
