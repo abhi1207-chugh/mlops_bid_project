@@ -42,24 +42,23 @@ def _citation_refs(finding: dict) -> set[tuple[str, str]]:
 
 
 def quality_metrics(results: list[dict]) -> dict:
-    """Compute deterministic, citation-based L3 metrics over in-scope cases.
+    """Compute deterministic L3 metrics over in-scope cases.
 
-    Groundedness: share of evaluated findings whose independent verifier passed.
-    Context relevance: share of unique cited document/clause references that are
-      in that scenario's pre-labelled supporting-passage set.
-    Faithfulness: share of cases with a passed verifier and citations attached to
-      every condition that contains an evidence statement.
-    Hallucination rate: 1 - faithfulness (unsupported/unverified findings).
+    Groundedness: verified findings / all evaluated scenarios.
+    Context relevance: unique cited document/clause references matching the
+      scenario's labelled supporting passages / all unique cited references.
+    Faithfulness: verified findings with a citation on every condition containing
+      an evidence statement / all evaluated scenarios.
+    Hallucination rate: 1 - faithfulness.
 
-    The denominator is all in-scope evaluation scenarios, including timeouts and
-    failed runs as unsuccessful findings. Quarantine-only intake cases are kept
-    out of this retrieval-quality denominator because no model should run for
-    them; those are validated by the contract/guardrail test suite separately.
+    Timeouts and failed runs remain in the denominator as unsuccessful findings.
+    Quarantine-only intake cases are excluded because no model or retrieval call
+    should be made for them; the contract and guardrail tests cover those cases.
     """
     eligible = [item for item in results if item.get("expected") != "quarantine"]
     total = len(eligible)
-    grounded_count = relevant_citations = all_citations = 0
-    support_covered = support_total = faithful_count = 0
+    grounded_count = relevant_citations = all_citations = faithful_count = 0
+    support_covered = support_total = 0
 
     for item in eligible:
         finding = _finding(item)
@@ -82,11 +81,10 @@ def quality_metrics(results: list[dict]) -> dict:
         )
         faithful_count += int(verified and all_evidence_cited and bool(actual))
 
-    context_relevance = relevant_citations / all_citations if all_citations else 0.0
     return {
         "evaluated_scenarios": total,
         "groundedness": grounded_count / total if total else 0.0,
-        "context_relevance": context_relevance,
+        "context_relevance": relevant_citations / all_citations if all_citations else 0.0,
         "faithfulness": faithful_count / total if total else 0.0,
         "hallucination_rate": 1 - (faithful_count / total) if total else 0.0,
         "counts": {
@@ -143,9 +141,16 @@ def main() -> None:
 
     passed = sum(item["passed"] for item in results)
     metrics = quality_metrics(results)
+    prompt_versions = {}
+    for item in results:
+        finding = _finding(item)
+        for agent, version in (finding.get("prompt_versions") or {}).items():
+            prompt_versions.setdefault(agent, set()).add(version)
+
     report = {
         "evaluation": "L3 fixed tender-bid screening evaluation",
-        "prompt_version": os.getenv("PROMPT_VERSION", "v1"),
+        "prompt_version": os.getenv("COMPLIANCE_PROMPT_VERSION", os.getenv("PROMPT_VERSION", "v1")),
+        "prompt_versions_observed": {agent: sorted(versions) for agent, versions in prompt_versions.items()},
         "provider": os.getenv("LLM_PROVIDER", "configured"),
         "total": len(results),
         "passed": passed,
@@ -165,7 +170,7 @@ def main() -> None:
     if output := os.getenv("EVAL_OUTPUT_PATH"):
         target = Path(output)
         target.parent.mkdir(parents=True, exist_ok=True)
-        target.write_text(rendered + "\\n")
+        target.write_text(rendered + "\n")
 
     if os.getenv("EVAL_FAIL_ON_ROUTE_ERRORS", "0").lower() in {"1", "true", "yes"} and passed != len(results):
         raise SystemExit(1)
