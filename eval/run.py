@@ -8,6 +8,7 @@ EVAL_FAIL_ON_ROUTE_ERRORS=1 in CI when a non-zero exit is desired.
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import time
@@ -148,10 +149,20 @@ def main() -> None:
         for agent, version in (finding.get("prompt_versions") or {}).items():
             prompt_versions.setdefault(agent, set()).add(version)
 
+    prompt_configuration = {
+        "classifier": os.getenv("CLASSIFIER_PROMPT_VERSION", os.getenv("PROMPT_VERSION", "v1")),
+        "compliance": os.getenv("COMPLIANCE_PROMPT_VERSION", os.getenv("PROMPT_VERSION", "v1")),
+        "verifier": os.getenv("VERIFIER_PROMPT_VERSION", os.getenv("PROMPT_VERSION", "v1")),
+    }
+    scenario_fingerprint = hashlib.sha256(
+        json.dumps(scenarios, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
     report = {
         "evaluation": "L3 fixed tender-bid screening evaluation",
-        "prompt_version": os.getenv("COMPLIANCE_PROMPT_VERSION", os.getenv("PROMPT_VERSION", "v1")),
+        "prompt_version": prompt_configuration["compliance"],
+        "prompt_configuration": prompt_configuration,
         "prompt_versions_observed": {agent: sorted(versions) for agent, versions in prompt_versions.items()},
+        "scenario_fingerprint_sha256": scenario_fingerprint,
         "provider": os.getenv("LLM_PROVIDER", "configured"),
         "total": len(results),
         "passed": passed,
