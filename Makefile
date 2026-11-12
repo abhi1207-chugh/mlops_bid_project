@@ -12,11 +12,13 @@ ingest:
 test:
 	docker compose run --rm worker pytest -q tests
 
+# Paired L3 experiment: only the compliance prompt changes (v1 -> v2).
+# Classifier and verifier remain fixed at v1 for both runs.
 eval:
-	STUB_DELAY_MS=$${EVAL_STUB_DELAY_MS:-0} LLM_PROVIDER=stub LLM_BASE_URL=http://stub-llm:8080 PROMPT_VERSION=v1 docker compose up -d --force-recreate --scale worker=1 stub-llm worker
-	docker compose run --rm -e LLM_PROVIDER=stub -e LLM_BASE_URL=http://stub-llm:8080 -e PROMPT_VERSION=v1 -e EVAL_OUTPUT_PATH=/artifacts/eval-v1.json worker python -m eval.run
-	STUB_DELAY_MS=$${EVAL_STUB_DELAY_MS:-0} LLM_PROVIDER=stub LLM_BASE_URL=http://stub-llm:8080 PROMPT_VERSION=v2 docker compose up -d --force-recreate --scale worker=1 stub-llm worker
-	docker compose run --rm -e LLM_PROVIDER=stub -e LLM_BASE_URL=http://stub-llm:8080 -e PROMPT_VERSION=v2 -e EVAL_OUTPUT_PATH=/artifacts/eval-v2.json worker python -m eval.run
+	CLASSIFIER_PROMPT_VERSION=v1 COMPLIANCE_PROMPT_VERSION=v1 VERIFIER_PROMPT_VERSION=v1 STUB_DELAY_MS=$${EVAL_STUB_DELAY_MS:-0} LLM_PROVIDER=stub LLM_BASE_URL=http://stub-llm:8080 PROMPT_VERSION=v1 docker compose up -d --force-recreate --scale worker=1 stub-llm worker
+	docker compose run --rm -e LLM_PROVIDER=stub -e LLM_BASE_URL=http://stub-llm:8080 -e PROMPT_VERSION=v1 -e CLASSIFIER_PROMPT_VERSION=v1 -e COMPLIANCE_PROMPT_VERSION=v1 -e VERIFIER_PROMPT_VERSION=v1 -e EVAL_OUTPUT_PATH=/artifacts/eval-v1.json worker python -m eval.run
+	CLASSIFIER_PROMPT_VERSION=v1 COMPLIANCE_PROMPT_VERSION=v2 VERIFIER_PROMPT_VERSION=v1 STUB_DELAY_MS=$${EVAL_STUB_DELAY_MS:-0} LLM_PROVIDER=stub LLM_BASE_URL=http://stub-llm:8080 PROMPT_VERSION=v1 docker compose up -d --force-recreate --scale worker=1 stub-llm worker
+	docker compose run --rm -e LLM_PROVIDER=stub -e LLM_BASE_URL=http://stub-llm:8080 -e PROMPT_VERSION=v1 -e CLASSIFIER_PROMPT_VERSION=v1 -e COMPLIANCE_PROMPT_VERSION=v2 -e VERIFIER_PROMPT_VERSION=v1 -e EVAL_OUTPUT_PATH=/artifacts/eval-v2.json worker python -m eval.run
 	docker compose run --rm -e EVAL_COMPARISON_PATH=/artifacts/eval-prompt-comparison.json worker python -m eval.compare
 
 load:
