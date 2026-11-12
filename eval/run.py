@@ -65,7 +65,8 @@ def quality_metrics(results: list[dict]) -> dict:
         verified = bool((finding.get("verification") or {}).get("passed"))
         grounded_count += int(verified)
 
-        expected = {tuple(pair) for pair in item.get("expected_support", [])}
+        expected = {(passage["doc_id"], passage["clause_ref"])
+                    for passage in item.get("expected_support", [])}
         actual = _citation_refs(finding)
         relevant_citations += len(actual & expected)
         all_citations += len(actual)
