@@ -26,6 +26,16 @@ def _scenario_ids(report: dict) -> list[str]:
 
 def compare(before: dict, after: dict) -> dict:
     before_ids, after_ids = _scenario_ids(before), _scenario_ids(after)
+    if before.get("scenario_fingerprint_sha256") != after.get("scenario_fingerprint_sha256"):
+        raise ValueError("Prompt variants do not share the same evaluation dataset fingerprint")
+    if before.get("provider") != after.get("provider"):
+        raise ValueError("Prompt variants must use the same LLM provider")
+    expected_before = {"classifier": "v1", "compliance": "v1", "verifier": "v1"}
+    expected_after = {"classifier": "v1", "compliance": "v2", "verifier": "v1"}
+    if before.get("prompt_configuration") != expected_before:
+        raise ValueError(f"Unexpected baseline prompt configuration: {before.get('prompt_configuration')}")
+    if after.get("prompt_configuration") != expected_after:
+        raise ValueError(f"Unexpected candidate prompt configuration: {after.get('prompt_configuration')}")
     if before.get("total") != after.get("total") or before_ids != after_ids:
         raise ValueError(
             "Prompt variants must be evaluated on the exact same ordered scenario set; "
