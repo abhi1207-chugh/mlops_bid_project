@@ -11,7 +11,8 @@ SUPPORT_PASSAGES: dict[tuple[str, str], str] = {
     ("TENDER-NITR-390", "Clause 1"): (
         "1. Tender Fee & Earnest Money Deposit (EMD): A non-refundable Tender Fee of Rs. 1500/- "
         "(Rupees One Thousand Five hundred only) and refundable EMD of Rs. 1,00,000/- "
-        "(Rupees One Lakh only) to be deposited through ONLINE mode only."
+        "(Rupees One Lakh only) to be deposited through ONLINE mode only using NET-BANKING / NEFT / IMPS "
+        "to the designated bank account of NIT Rourkela as detailed below:"
     ),
     ("TENDER-NITR-390", "Clause 2"): (
         "2. EMD Exemption: Micro and Small Enterprises (MSEs) as defined in MSE Procurement Policy "
@@ -39,33 +40,39 @@ SUPPORT_PASSAGES: dict[tuple[str, str], str] = {
         "experience criteria must be submitted along with the bid."
     ),
     ("TENDER-NITR-390", "Clause 11"): (
-        "11. Documents to be submitted: (i) Cover – I: Technical Part (all documents must be self-attested): "
-        "Valid Legal Status, PAN Card, GST Registration Certificate, Tender Acceptance Letter, Bid Security "
-        "Declaration (for EMD-exempted bidder), Bid-specific OEM Authorization letter, experience documents, "
-        "turnover documents, product Data Sheet, Escalation Matrix for Service Support, and Warranty declaration "
-        "on OEM letterhead. Bids not accompanied by any of the above documents shall be rejected summarily."
+        "11. Documents to be submitted:\\n(i) Cover – I: Technical Part (all documents must be self-attested)\\n"
+        "a) Copy of Valid Legal Status (Proprietorship / Partnership / Public Limited / Private Limited)\\n"
+        "b) Copy of Valid PAN Card\\nc) Copy of Valid GST Registration Certificate\\n"
+        "d) Duly filled and signed (Tender Acceptance Letter)\\n"
+        "e) Duly filled and signed Bid Security Declaration (For EMD exempted bidder)\\n"
+        "f) Bid specific OEM Authorization letter\\n"
+        "g) Relevant document in support of Bidder’s experience criteria\\n"
+        "h) Relevant documents in support of the Bidder’s turnover criteria\\n"
+        "i) Data Sheet of the Products offered\\nj) Escalation Matrix for Service Support\\n"
+        "k) Warranty declaration on OEM letterhead\\n"
+        "NOTE: Bids not accompanied by any of the above documents shall be rejected summarily."
     ),
     ("DOE-OM-2016-07-25", "Para 3"): (
-        "3. As per Rule 160(i)(a) of GFR, 2005, there is already a provision that the bidding document should "
-        "contain criteria for eligibility and qualification to be met by the bidders such as minimum level of "
-        "experience, past performance, technical capability, manufacturing facilities and financial position etc. "
-        "In view of above, it is further clarified that all Central Ministries / Departments may relax condition "
-        "of prior turnover and prior experience in public procurement to all Startups (whether MSEs or otherwise) "
-        "subject to meeting of quality and technical specifications in accordance with the relevant provisions of GFR, 2005."
+        "3. As per Rule 160(i)(a) of GFR, 2005, there Is already a provision that the bidding document should contain "
+        "criteria for eligibility and qualification to be met by the bidders such as minimum level of experience, "
+        "past performance, technical capability, manufacturing facilities and financial position etc. {n view of above, "
+        "it is further clarified that all Central Ministries / Departments may telax condition of prior turnover and "
+        "priar experience in public procurement to all Startups {whether MSEs or otherwise) subject to meeting of "
+        "quality and technical specifications in accordance with the relevant provisions of GFR, 2005."
     ),
     ("DOE-OM-2016-09-20", "Para 2"): (
-        "2. A doubt has arisen if it makes optional for Central Ministries/ Departments to relax condition of "
-        "prior experience and prior turnover in public procurement to Startups. In this regard, it is again clarified "
-        "that normally for all public procurement, the Central Ministries/ Departments have to ensure that criteria "
-        "of prior turnover and prior experience for all Startups is relaxed subject to their meeting of quality and "
-        "technical specifications."
+        "2. A doubt has arisen if it makes optional for Central Ministries/ Departments to relax condition of prior "
+        "experience and prior turnover in public procurement to Startups. In this regard, it is again clarified that "
+        "normally for all public procurement, the Central Ministries/ Departments have to ensure that criteria of "
+        "prior turnover and prior experience for all Startups is relaxed subject to their meeting of quality and "
+        "technical specifications. :"
     ),
     ("GFR-2017-CH6", "Rule 173(i)"): (
-        "Rule 173 (i): The text of the bidding document should be self-contained and comprehensive without any "
+        "Rule 173 (i) The text of the bidding document should be selfcontained and comprehensive without any "
         "ambiguities. All essential information, which a bidder needs for sending responsive bid, should be clearly "
         "spelt out in the bidding document in simple language. The condition of prior turnover and prior experience "
-        "may be relaxed for Startups (as defined by Department of Industrial Policy and Promotion) subject to meeting "
-        "of quality and technical specifications and making suitable provisions in the bidding document."
+        "may be relaxed for Startups (as defined by Department of Industrial Policy and Promotion) subject to "
+        "meeting of quality & technical specifications and making suitable provisions in the bidding document."
     ),
     ("MSME-CIRCULAR-2016-03-10", "Para 4"): (
         "(4) In exercise of Para 16 of Public Procurement Policy for Micro and Small Enterprises Order 2012, "
