@@ -6,8 +6,8 @@ Prompts are versioned files in `prompts/<agent>/vN.md`. `load_prompt` resolves a
 agent-specific override (for example, `COMPLIANCE_PROMPT_VERSION=v2`) and records
 the version used by each agent in the persisted finding and trace.
 
-The L3 experiment is paired on the same fixed 20-scenario dataset using the local
-stub provider. It deliberately changes only the compliance prompt:
+The experiment is paired on the same fixed 20-scenario dataset. It deliberately
+changes only the compliance prompt:
 
 | Agent | Before | After |
 |---|---|---|
@@ -15,13 +15,21 @@ stub provider. It deliberately changes only the compliance prompt:
 | Compliance | v1 | v2 |
 | Verifier | v1 | v1 |
 
-This isolates the effect of the compliance prompt change. `make eval` writes
-`artifacts/eval-v1.json`, `artifacts/eval-v2.json`, and
-`artifacts/eval-prompt-comparison.json`. The comparison checks that case IDs and
-ordering match, reports deltas for route accuracy and all four L3 quality metrics,
-and only declares a single winner when it is no worse on every compared metric.
+The local Stub LLM uses deterministic Python routing and citation logic; it does not
+interpret prompt wording. Therefore `make eval` is a reproducibility/smoke test of
+the 20-case batch, report schema, metric calculations and paired-comparison guard.
+Its result is **not evidence that one prompt is better**.
 
-**Run the experiment before recording scores.** The previously committed v1-only
+For a genuine prompt experiment, `make eval-live` runs both versions against the
+configured Gemini provider using the credentials and base URL from `.env`. It writes
+`artifacts/eval-live-v1.json`, `artifacts/eval-live-v2.json`, and
+`artifacts/eval-live-comparison.json`. This can consume provider quota and may
+incur charges depending on the configured account. The comparison checks matching
+scenario fingerprints, case ordering, provider, and the prompt-version matrix; it
+reports deltas for route accuracy and all four L3 quality metrics, and only declares
+a single winner when it is no worse on every compared metric.
+
+**Run both commands before recording scores.** The previously committed v1-only
 evaluation used an older scenario set and is not a valid before/after result for the
 current L3 benchmark. Do not reuse its figures as current experiment results.
 
@@ -40,11 +48,12 @@ retrieval-quality denominator: they must not reach the LLM or retrieval system a
 are handled by the contract/guardrail path. In-scope timeouts and failed runs remain
 in the denominator as unsuccessful findings.
 
-Run both prompt variants and the comparison from the command line:
+Run the checks and paired experiment from the command line:
 
 ```bash
 make test
-make eval
+make eval       # deterministic stub smoke test
+make eval-live  # real Gemini prompt comparison
 ```
 
 The evaluator is a deterministic equivalent to a groundedness evaluator, using the
