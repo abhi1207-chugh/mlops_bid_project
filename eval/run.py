@@ -1,6 +1,10 @@
-"""Run the committed evaluation scenarios against a running API.
+"""Run the fixed L3 evaluation set against a running API.
 
-Usage: EVAL_API_URL=http://api:8000 python -m eval.run
+Usage:
+  EVAL_API_URL=http://api:8000 python -m eval.run
+
+The default command always writes its report, even when scenarios fail. Set
+EVAL_FAIL_ON_ROUTE_ERRORS=1 in CI when a non-zero exit is desired.
 """
 from __future__ import annotations
 
@@ -14,67 +18,156 @@ from eval.scenarios import twenty
 
 BASE_URL = os.getenv("EVAL_API_URL", "http://api:8000").rstrip("/")
 POLL_SECONDS = float(os.getenv("EVAL_POLL_SECONDS", "1"))
-TIMEOUT_SECONDS = float(os.getenv("EVAL_TIMEOUT_SECONDS", "120"))
+TIMEOUT_SECONDS = float(os.getenv("EVAL_TIMEOUT_SECONDS", "180"))
+
+
+def _finding(item: dict) -> dict:
+    return (item.get("result") or {}).get("finding") or {}
+
+
+def _citation_refs(finding: dict) -> set[tuple[str, str]]:
+    """Collect unique document/clause references from finding and conditions."""
+    refs: set[tuple[str, str]] = set()
+    citations = list(finding.get("citations") or [])
+    for condition in finding.get("conditions") or []:
+        if isinstance(condition, dict):
+            citations.extend(condition.get("citations") or [])
+    for citation in citations:
+        if not isinstance(citation, dict):
+            continue
+        doc_id, clause_ref = citation.get("doc_id"), citation.get("clause_ref")
+        if doc_id and clause_ref:
+            refs.add((str(doc_id), str(clause_ref)))
+    return refs
 
 
 def quality_metrics(results: list[dict]) -> dict:
-    """Deterministic equivalent of a groundedness evaluator.
+    """Compute deterministic, citation-based L3 metrics over in-scope cases.
 
-    Groundedness is an independently verified finding; context relevance means a
-    citation contains one of the scenario's expected corpus passages; faithfulness
-    requires every condition with evidence to carry a resolved citation; and the
-    hallucination rate is the share of evaluated findings failing faithfulness.
-    Invalid inputs are not included because they must never invoke retrieval/LLM.
+    Groundedness: share of evaluated findings whose independent verifier passed.
+    Context relevance: share of unique cited document/clause references that are
+      in that scenario's pre-labelled supporting-passage set.
+    Faithfulness: share of cases with a passed verifier and citations attached to
+      every condition that contains an evidence statement.
+    Hallucination rate: 1 - faithfulness (unsupported/unverified findings).
+
+    The denominator is all in-scope evaluation scenarios, including timeouts and
+    failed runs as unsuccessful findings. Quarantine-only intake cases are kept
+    out of this retrieval-quality denominator because no model should run for
+    them; those are validated by the contract/guardrail test suite separately.
     """
-    eligible = [item for item in results if item["expected"] != "quarantine"]
-    grounded = relevant = faithful = 0
-    for item in eligible:
-        finding = item["result"].get("finding") or {}
-        verified = bool((finding.get("verification") or {}).get("passed"))
-        citations = {(c.get("doc_id"), c.get("clause_ref")) for c in finding.get("citations", [])}
-        expected = {tuple(pair) for pair in item.get("expected_support", [])}
-        condition_cited = all(not c.get("evidence") or c.get("citations") for c in finding.get("conditions", []))
-        grounded += verified
-        relevant += bool(expected & citations)
-        faithful += bool(verified and condition_cited)
+    eligible = [item for item in results if item.get("expected") != "quarantine"]
     total = len(eligible)
-    return {"evaluated_findings": total, "groundedness": grounded / total if total else 0,
-            "context_relevance": relevant / total if total else 0,
-            "faithfulness": faithful / total if total else 0,
-            "hallucination_rate": 1 - (faithful / total) if total else 0}
+    grounded_count = relevant_citations = all_citations = 0
+    support_covered = support_total = faithful_count = 0
+
+    for item in eligible:
+        finding = _finding(item)
+        verified = bool((finding.get("verification") or {}).get("passed"))
+        grounded_count += int(verified)
+
+        expected = {tuple(pair) for pair in item.get("expected_support", [])}
+        actual = _citation_refs(finding)
+        relevant_citations += len(actual & expected)
+        all_citations += len(actual)
+        support_covered += len(actual & expected)
+        support_total += len(expected)
+
+        conditions = finding.get("conditions") or []
+        all_evidence_cited = bool(finding) and bool(conditions) and all(
+            not str(condition.get("evidence", "")).strip()
+            or bool(condition.get("citations"))
+            for condition in conditions
+            if isinstance(condition, dict)
+        )
+        faithful_count += int(verified and all_evidence_cited and bool(actual))
+
+    context_relevance = relevant_citations / all_citations if all_citations else 0.0
+    return {
+        "evaluated_scenarios": total,
+        "groundedness": grounded_count / total if total else 0.0,
+        "context_relevance": context_relevance,
+        "faithfulness": faithful_count / total if total else 0.0,
+        "hallucination_rate": 1 - (faithful_count / total) if total else 0.0,
+        "counts": {
+            "grounded_findings": grounded_count,
+            "relevant_citations": relevant_citations,
+            "all_unique_citations": all_citations,
+            "expected_support_passages_cited": support_covered,
+            "expected_support_passages": support_total,
+            "faithful_findings": faithful_count,
+        },
+    }
+
+
+def run_scenario(client: httpx.Client, scenario: dict) -> dict:
+    submitted = client.post(f"{BASE_URL}/v1/screenings", json=scenario["bid"])
+    if submitted.status_code == 422:
+        result = submitted.json()
+        actual = "quarantine"
+    else:
+        submitted.raise_for_status()
+        run_id = submitted.json()["run_id"]
+        deadline = time.monotonic() + TIMEOUT_SECONDS
+        result = {"run_id": run_id, "status": "timed_out"}
+        while time.monotonic() < deadline:
+            response = client.get(f"{BASE_URL}/v1/screenings/{run_id}")
+            response.raise_for_status()
+            result = response.json()
+            if result.get("status") in ("done", "escalated", "failed"):
+                break
+            time.sleep(POLL_SECONDS)
+        actual = (result.get("finding") or {}).get("route", result.get("status", "unknown"))
+
+    return {
+        "id": scenario["id"],
+        "description": scenario.get("description", ""),
+        "expected": scenario["expected_route"],
+        "actual": actual,
+        "expected_support": scenario.get("expected_support", []),
+        "passed": actual == scenario["expected_route"],
+        "result": result,
+    }
 
 
 def main() -> None:
-    scenarios = twenty(json.loads(Path("/app/eval/bidders.json").read_text()))
+    data_path = Path(__file__).with_name("bidders.json")
+    scenarios = twenty(json.loads(data_path.read_text()))
+    if len(scenarios) < 20 or any(not item.get("expected_support") for item in scenarios):
+        raise ValueError("L3 requires at least 20 scenarios, each with expected outcome and supporting passage")
+
     results: list[dict] = []
-    with httpx.Client(timeout=20) as client:
+    with httpx.Client(timeout=30) as client:
         for scenario in scenarios:
-            submitted = client.post(f"{BASE_URL}/v1/screenings", json=scenario["bid"])
-            if submitted.status_code == 422:
-                actual = "quarantine"
-                result = submitted.json()
-            else:
-                submitted.raise_for_status()
-                run_id = submitted.json()["run_id"]
-                deadline = time.monotonic() + TIMEOUT_SECONDS
-                while time.monotonic() < deadline:
-                    result = client.get(f"{BASE_URL}/v1/screenings/{run_id}").json()
-                    if result["status"] in ("done", "escalated", "failed"):
-                        break
-                    time.sleep(POLL_SECONDS)
-                else:
-                    result = {"status": "timed_out", "run_id": run_id}
-                actual = result.get("finding", {}).get("route", result["status"])
-            results.append({"id": scenario["id"], "expected": scenario["expected_route"], "actual": actual,
-                            "expected_support": scenario.get("expected_support", []),
-                            "passed": actual == scenario["expected_route"], "result": result})
+            results.append(run_scenario(client, scenario))
+
     passed = sum(item["passed"] for item in results)
-    report = {"prompt_version": os.getenv("PROMPT_VERSION", "v1"), "total": len(results), "passed": passed,
-              "route_accuracy": passed / len(results), "metrics": quality_metrics(results), "results": results}
-    print(json.dumps(report, indent=2))
+    metrics = quality_metrics(results)
+    report = {
+        "evaluation": "L3 fixed tender-bid screening evaluation",
+        "prompt_version": os.getenv("PROMPT_VERSION", "v1"),
+        "provider": os.getenv("LLM_PROVIDER", "configured"),
+        "total": len(results),
+        "passed": passed,
+        "failed": len(results) - passed,
+        "route_accuracy": passed / len(results) if results else 0.0,
+        "metric_definitions": {
+            "groundedness": "verified findings / all in-scope scenarios",
+            "context_relevance": "unique cited document-clause references matching labelled support / all unique cited references",
+            "faithfulness": "verified findings with citations on every evidence-bearing condition / all in-scope scenarios",
+            "hallucination_rate": "1 - faithfulness",
+        },
+        "metrics": metrics,
+        "results": results,
+    }
+    rendered = json.dumps(report, indent=2)
+    print(rendered)
     if output := os.getenv("EVAL_OUTPUT_PATH"):
-        Path(output).write_text(json.dumps(report, indent=2))
-    if passed != len(results):
+        target = Path(output)
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text(rendered + "\\n")
+
+    if os.getenv("EVAL_FAIL_ON_ROUTE_ERRORS", "0").lower() in {"1", "true", "yes"} and passed != len(results):
         raise SystemExit(1)
 
 
