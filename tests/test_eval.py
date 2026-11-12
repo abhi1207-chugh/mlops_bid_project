@@ -14,15 +14,23 @@ def test_evaluation_set_has_twenty_supported_cases_including_b1():
     assert len(scenarios) == 20
     assert len({item["id"] for item in scenarios}) == 20
     assert all(item.get("expected_route") and item.get("expected_support") for item in scenarios)
+    assert all(
+        passage.get("doc_id") and passage.get("clause_ref") and len(passage.get("passage", "")) > 30
+        for item in scenarios
+        for passage in item["expected_support"]
+    )
     b1 = next(item for item in scenarios if item["id"] == "B1")
     assert b1["expected_route"] == "escalate_to_human"
-    assert ("GFR-2017-CH6", "Rule 173(i)") in b1["expected_support"]
+    assert any(
+        passage["doc_id"] == "GFR-2017-CH6" and passage["clause_ref"] == "Rule 173(i)"
+        for passage in b1["expected_support"]
+    )
 
 
 def test_quality_metrics_deduplicate_citations_and_score_evidence():
     result = {
         "expected": "escalate_to_human",
-        "expected_support": [["DOC", "Clause 1"]],
+        "expected_support": [{"doc_id": "DOC", "clause_ref": "Clause 1", "passage": "support"}],
         "result": {"finding": {
             "verification": {"passed": True},
             "citations": [{"doc_id": "DOC", "clause_ref": "Clause 1"}],
@@ -42,7 +50,8 @@ def test_quality_metrics_deduplicate_citations_and_score_evidence():
 
 def test_quality_metrics_count_missing_finding_as_failure():
     metrics = quality_metrics([
-        {"expected": "pass_to_technical_evaluation", "expected_support": [["DOC", "Clause 1"]],
+        {"expected": "pass_to_technical_evaluation",
+         "expected_support": [{"doc_id": "DOC", "clause_ref": "Clause 1", "passage": "support"}],
          "result": {"status": "failed"}}
     ])
     assert metrics["groundedness"] == 0
@@ -59,12 +68,13 @@ def test_quality_metrics_exclude_quarantined_intake_cases():
 
 
 def test_prompt_comparison_rejects_different_scenario_sets():
+    metrics = {name: 1 for name in (
+        "groundedness", "context_relevance", "faithfulness", "hallucination_rate"
+    )}
     v1 = {"prompt_version": "v1", "total": 1, "results": [{"id": "B1"}],
-          "route_accuracy": 1, "metrics": {name: 1 for name in (
-              "groundedness", "context_relevance", "faithfulness", "hallucination_rate")}}
+          "route_accuracy": 1, "metrics": metrics}
     v2 = {"prompt_version": "v2", "total": 1, "results": [{"id": "B2"}],
-          "route_accuracy": 1, "metrics": {name: 1 for name in (
-              "groundedness", "context_relevance", "faithfulness", "hallucination_rate")}}
+          "route_accuracy": 1, "metrics": metrics}
     with pytest.raises(ValueError):
         compare(v1, v2)
 
