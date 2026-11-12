@@ -71,10 +71,13 @@ def test_prompt_comparison_rejects_different_scenario_sets():
     metrics = {name: 1 for name in (
         "groundedness", "context_relevance", "faithfulness", "hallucination_rate"
     )}
-    v1 = {"prompt_version": "v1", "total": 1, "results": [{"id": "B1"}],
-          "route_accuracy": 1, "metrics": metrics}
-    v2 = {"prompt_version": "v2", "total": 1, "results": [{"id": "B2"}],
-          "route_accuracy": 1, "metrics": metrics}
+    common = {"total": 1, "scenario_fingerprint_sha256": "same-data", "provider": "stub"}
+    v1 = {**common, "prompt_version": "v1",
+          "prompt_configuration": {"classifier": "v1", "compliance": "v1", "verifier": "v1"},
+          "results": [{"id": "B1"}], "route_accuracy": 1, "metrics": metrics}
+    v2 = {**common, "prompt_version": "v2",
+          "prompt_configuration": {"classifier": "v1", "compliance": "v2", "verifier": "v1"},
+          "results": [{"id": "B2"}], "route_accuracy": 1, "metrics": metrics}
     with pytest.raises(ValueError):
         compare(v1, v2)
 
@@ -84,9 +87,12 @@ def test_prompt_comparison_uses_hallucination_lower_is_better():
                   "faithfulness": 0.8, "hallucination_rate": 0.2}
     metrics_v2 = {"groundedness": 0.9, "context_relevance": 0.9,
                   "faithfulness": 0.9, "hallucination_rate": 0.1}
-    v1 = {"prompt_version": "v1", "total": 1, "results": [{"id": "B1"}],
-          "route_accuracy": 0.8, "metrics": metrics_v1}
-    v2 = {"prompt_version": "v2", "total": 1, "results": [{"id": "B1"}],
-          "route_accuracy": 0.9, "metrics": metrics_v2}
+    common = {"total": 1, "scenario_fingerprint_sha256": "same-data", "provider": "stub"}
+    v1 = {**common, "prompt_version": "v1",
+          "prompt_configuration": {"classifier": "v1", "compliance": "v1", "verifier": "v1"},
+          "results": [{"id": "B1"}], "route_accuracy": 0.8, "metrics": metrics_v1}
+    v2 = {**common, "prompt_version": "v2",
+          "prompt_configuration": {"classifier": "v1", "compliance": "v2", "verifier": "v1"},
+          "results": [{"id": "B1"}], "route_accuracy": 0.9, "metrics": metrics_v2}
     report = compare(v1, v2)
     assert report["winner"] == "v2"
