@@ -1267,24 +1267,6 @@ docker compose down
 
 ---
 
-## 20. Final Project Goal
-
-The objective is to provide a reliable, evidence-grounded bid compliance screening workflow.
-
-The system should:
-
-1. Accept and validate bid data.
-2. Classify the bidder.
-3. Retrieve applicable tender and policy evidence.
-4. Evaluate mandatory conditions.
-5. Verify every finding and citation.
-6. Route the result appropriately.
-7. Escalate unresolved or conflicting cases.
-8. Record the complete run for monitoring and audit.
-
-The tender committee remains responsible for the final decision.
-
----
 
 ## Repository
 
